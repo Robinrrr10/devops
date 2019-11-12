@@ -1,0 +1,1253 @@
+Ansible
+-------
+-------
+
+ansible plugin
+---
+connection plugin is used to connect to docker
+
+
+
+Playbook
+--------
+should be written in yaml code
+
+Playbook
+-------- ----------- ----------
+
+hosts   - to what are machine we need tto install
+
+variables
+
+tasks     - to give different task/installation 
+
+handlers
+
+
+
+---                         //three dash is important
+-hosts: webservers
+ tasks:
+   -name: install apache2            //to installl apache
+   apt: name=apache2 update_cache=yes state=latest         //from whae yum or apt  , then name of the software to install eg: apache2   , update_cache  - whether need to update apt/yum before update   , state   means want to install latest or not 
+
+ notify
+   -restart apache2           //this will trigger to handleres
+
+ handlers:
+   -name: restart apache2         
+    server: name=apache2 state=restart
+
+
+
+-----------------------------
+
+
+make ssh connection
+-------
+
+--------------------
+
+ansible --version
+
+vi /etc/ansible/hosts
+
+give a group name and add host ip address
+
+[my-servers]            //group name
+192.168.40.137           //host/node machine where it config should be pushed
+192.168.40.138
+
+
+       //We can use any number of group and host/node machine
+
+
+
+check ssh connection is working using ansible or not using below command
+
+ansible -m ping 'groupname'          Eg: ansible -m ping 'my-servers'
+
+if we get success. then ssh connection is fine
+
+
+
+
+write playbook
+
+vi myplaybook.yml               // Should give proper space as like below
+
+---
+- name: install apache & php & mysql                     //name of playbook
+  hosts: my-servers                                    //give group name
+  become: true                                         // activate the user mode
+  become_user: root                                      // here im giving the user. so if above is true we will become root user in machine
+  gather_facts: true                                      // it will gather files or information of node/host machine to our playbook
+  tasks:                                                   //give this to add all task in below
+       - name: "Install apache2"
+         package: name=apache2 state=present              //give module based on machine.  //state=present means it should be available, if state=absent means it should be deleted Eg: apt or package or yum  etc   Eg:  yum name= ..    
+       - name: "Install apache2-php5"
+         package: name=libapache2-mod-php state=present
+       - name: "Install php-cli"
+         package: name=php-cli state=present
+       - name: "Install php-mcrypt"
+         package: name=php-mcrypt state=present
+       - name: "Install php-gd"
+         package: name=php-gd state=present
+       - name: "Install php-mysql"
+         package: name=php-mysql state=present
+       - name: "Install mysqlserver"
+         package: name=mysql-server state=present
+
+
+
+
+To run the playbook give below command
+ansible-playbook filename       Eg: ansible-playbook myplaybook.yml
+
+
+vi mymysql.yml
+
+---
+- hosts: all        //This will take all group and all host ip  // we can also give group name or only host ip
+  remote_user: root              
+
+  tasks:
+      - name: Install "pip"
+        apt: name=python-pip state=present
+
+      - name: Install "libmysqlclient-dev"
+        apt: name=libmysqlclient-dev state=present
+
+      - name: Install the Python MySQLB module
+        pip: name=MYSQL-pytho                             //here pip will install mysql module
+
+      - name: Create user robin
+        mysql_user: user=robin password=rrob priv=*.*:ALL state=present
+
+      - name: create database acs
+        mysql_db: db=acs state=present
+
+      - name: create table user
+        command: mysql -u robin -prrob -e 'CREATE TABLE user (user varchar(250), email varchar(50));' acs
+
+
+ansible-playbook mymysql.yml
+
+
+
+vi mydeployweb.yml
+
+---
+- name: copy
+  hosts: my-servers
+  become: true
+  become_user: root
+  gather_facts: true
+  tasks:
+    - name: "copy file"
+      copy: src=/home/myweb/index.html dest=/var/www/html/index.html
+    - name: "copy file"
+      copy: src=/home/myweb/contacts.html dest=/var/www/html/contacts.html
+    - name: "copy file"
+      copy: src=/home/myweb/about.html dest=/var/www/html/about.html
+
+
+ansible-playbook mydeployweb.yml
+
+
+
+ansible-playbook ymlfile -i customhostsfile
+
+
+
+
+Example:
+
+  tasks:
+  - name: httpd is installed
+    yum: name=httpd state=installed
+  - name: httpd is running and enabled
+    service: name=httpd state=started enabled=yes
+
+
+--------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+Ansible
+---------
+ansible
+ansible-doc
+ansible-playbook
+ansible-pull
+
+
+modules:
+-------
+copy
+service
+yum
+user
+group
+
+etc
+
+---------------------
+
+ansible installation
+---------------
+
+yum repolist        //Shows all repo list
+
+if epel is not there then give below command to install
+
+yum install epel-release
+
+yum install ansible
+
+rpm -qa | grep ansible    //to check whether it is installed or not
+
+rpm -qa ansibl---..noarch | more     //to check what are insalled
+
+useradd -d /home/robin -m robin                //to create user
+
+passwd robin          //To set password
+
+passwd -x -l robin       //to set user not to expire
+
+create the user for all clients/agents
+
+in client
+
+vi /etc/sudoers     //all below lines 
+robin ALL=NOPASSWD: ALL
+
+in ansible machine
+
+su - robin       //To switch user 
+
+ssh-keygen -t rsa   //To gendrate ssh key
+
+copy the key
+
+copy the public key
+
+
+in client
+
+su - robin
+
+ls
+
+mkdir .ssh         //create directory for copying the key
+
+chmod 700 .ssh/
+
+chown robin:robin .ssh/
+
+cd .ssh
+
+vi authorized_keys
+
+paste copied key here and save it
+
+chown robin:robin authorized_keys
+
+ls -l
+
+chmod 600 authorized_keys
+
+set the same in other client server also
+
+
+go to ansible and try 
+
+ssh clientiporhost         //it should not ask password
+
+
+-----
+
+
+chown -R robin:robin /etc/ansible
+
+
+
+/etc/ansible/hosts
+
+[appserver]              //group name
+ipOrHostnameOfServer1
+ipOrHostnameOfServer2
+ipOrHostnameOfServer3
+ipOrHostnameOfServer4
+
+
+
+[dbservers]
+ipOrHostnameOfServer3
+ipOrHostnameOfServer5
+ipOrHostnameOfServer6
+ipOrHostnameOfServer7
+
+
+
+
+
+
+/etc/ansible/ansible.cfg
+
+
+ansible-doc -l | more          //To list all modules of ansible
+
+ansible-doc -l | wc -l         //will show how many modules are there
+
+ansible-doc -s modulename       //Will show what function will do by this module   Eg: ansible-doc -s yum
+
+
+
+ansible groupname -m modulename     //Eg: ansible dbserver -m ping
+
+ansible all -m ping   //This will ping all available group
+
+ansible all -m ping -o      //will display in single line
+
+
+ansilbe appserver -m shell -a "any shell commands"   Eg: ansilbe appserver -m shell -a "hostname;df -h"   //This will execute shell command
+
+
+
+ansilbe appserver -m shell -a "any shell commands" -v    //-v os for verbose
+
+
+ansible appgroup -m yum -a "name=httpd state=present" -s   //-s means use sudo user
+
+
+ansible appgroup -m service-a "name=httpd state=started" -s
+
+ansible ll -m copy -a "src=/home/myfile.txt dest=/home/myfile2.txt" -s  //to copy
+
+
+
+If we get any error. just install tht python lib which is shown on error msg
+
+
+ansible appgroup -m yum -a "name=libselinux-python state=present" -s
+
+
+
+
+
+ansible roles
+----
+
+cd /etc/ansible
+
+cd mydir
+
+tree    //will show tree
+
+
+cat group_vars/all
+---
+
+dnsserver: 8.8.8.8
+ntpserver: 27.124.125.251
+
+cd roles/commons
+this contains
+handlers
+tasks
+templates
+
+cat task/main.yml
+
+---
+
+- name: confire dns client
+  templete: src:resolve.conf dest=/etc/resolv.conf
+  tag: dns
+
+- name: Instll ntp
+  yum: nme=ntp state=present
+  tag: ntp
+
+- name: copy ntp file
+  templete: src=ntp.conf dest=/etc/ntp.conf
+  tag: ntp
+  notify: restart ntp service
+
+
+cat handlers/main.yml
+
+---
+
+- name: restart ntp service
+  service: name=ntpd state=restarted
+
+
+cat templates/ntp.conf   //In templates we can use variables. this is dynamic
+
+this is file content
+server {{ ntpserver }}           //Here the variable is called
+
+cd ../web
+this contains
+files
+handlers
+tasks
+
+cat files/index.html        //In files we cannot use any variable. This is static
+
+
+cat tasks/main.yml
+
+---
+
+- name: instll apache
+  yum: name={{ item }} state=present     //Below two items(httpd, httpd-tools) will be replaced at run time
+  with_items:
+    - httpd
+    - httpd-tools
+
+- name: copy apache index file
+  copy: src=index.html dest=/var/www/html/index.html
+  tags: apache
+  noditify: restart apache service              //This will notify handler
+
+
+cat handlers/main.yml
+
+---
+
+- name: restart apache service           //When this notification comes, this will be triggered
+  service: name=httpd state=restarted
+
+
+cd ../
+
+cat hosts
+
+[all]
+labserver1
+webserver1
+
+[webservers]
+webserver1
+
+
+cat main.yml
+
+---
+
+- hosts: all
+  tasks:
+
+- name: apply common configuration
+  hosts: all
+  user: robin
+  become: yes
+  become_method: sudo
+  tasks:
+  roles:
+    - common
+
+- name: install and configure apache webservers
+  hosts: webservers
+  user: robin
+  become: yes
+  become_method: sudo
+  tasks:
+  roles:
+    - web
+
+
+
+ansible-playbook main.yml -i hosts      //it will pick hosts file in current directory
+
+
+ansible-playbook main.yml -i hosts --tags dns    //it will do only dns task
+
+ansible-playbook main.yml -l labserver -i hosts --tags dns   //it will execute only in lbserver
+
+
+
+
+
+
+
+
+
+
+aws EC2 playbook example
+--
+ec2creation.yml 
+---
+
+- hosts: localhost
+
+  tasks:
+
+    - name: Setting up Security/Firewall Group
+      description: Rules Allowing Traffic on port 22 and 80
+      region: us-west-2
+      rules:
+        - proto: tcp
+          from_port: 80
+          to_port: 80
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 22
+          to_port: 22
+          cidr_ip: 0.0.0.0/0
+      rules_egress:
+        - proto: all
+          cidr_ip: 0.0.0.0/0
+      
+    - name: Provision a EC2 Instance
+      ec2:
+         key_name: Yogesh-AWSKey
+         region: us-west-2
+         instance_type: t2.micro
+         image: ami-775e4f16
+         wait: yes
+         wait_timeout: 500
+         count: 1
+         instance_tags:
+             Name: awslabserver
+             Owner: Yogesh
+         monitoring: no
+         vpc_subnet_id: subnet-920b30f6
+         assign_public_ip: yes
+         group: Yogest_AWS_Security_Grp
+       register: ec2_out
+
+    - nme: Wait for SSH to come up
+      wait_for: host={{ item.public_dns_name }} port=22 dely=60 timeout=320 state started
+      with_item: '{{ec2_out.instances}}'
+
+
+
+ansible-playbook ec2creation.yml 
+
+
+
+
+
+usermanagement.yaml
+-----------------
+
+---
+
+- hosts: all
+  become_user: root
+  tasks:
+
+    - name: Add a group
+      group:
+        name={{ item }}
+        state=present
+      with_items:
+        - demogrp
+        - demogrp1
+        - demogrp2
+      tags: add_new_group
+
+    - name: Add users
+      user:
+        name={{ item }}
+        state=present
+        group=demogrp
+        password="abc123"
+        shell=/bin/bash
+      with_items:
+        - demouser1
+        - demouser2
+        - demouser3
+        - demouser4
+      tags: add_new_user
+
+    - name: generate ssh keys for a user
+      user:
+        name={{ item }}
+        generate_ssh_key=yes
+        ssh_key_bits=4096
+        ssh_key_file=.ssh/id_rsa
+      with_items:
+        - demouser1
+      tags: generate_ssh_keys
+    
+     - name: update authorized keys for a user
+       authorized_key:
+         user: demouser1
+         state: present
+         key: "{{ lookup('file', '/home/demouser1/.ssh/id_rsa.pub') }}"
+       tags: copy_pub_key
+
+     - name: delete users
+       user:
+         name={{ item }}
+         state=absent
+       with_items:
+         - demouser3
+         - demouser4
+       tags: remove_user
+
+     - name: delete group
+       group:
+         name={{ item }}
+         state=absent
+         with_items:
+           - demogrp1
+           - demogrp2
+         tags: remove_group 
+
+
+
+ansible-playbook usermanagement.yaml --list-tags       //This is list all available tags
+
+ansible-playbook usermanagement.yaml --tags  add_new_group     //run tag of the playbook
+
+
+
+in client 
+cat /etc/group
+
+ansible-playbook usermanagement.yaml --tags  add_new_user
+
+
+
+
+userdel -r username         //to delete the user
+
+
+
+ssh user@ipaddress -i /home/user2/.ssh/id_rsa
+
+
+
+ansible-playbook usermanagement.yaml --tags  remove_user,remove_group    //This will run this two tags
+
+
+
+
+
+
+
+linuxpatching.yml
+---------------
+
+---
+
+---
+## Demo Ansible Playbook to perform patching on RHEl/CentOS Server
+## For Demo Purpose only.. Use it at your own responsibility.
+## Can update it as per your requirements - Yogesh 27/12/2016
+
+- hosts: dev-redhat
+  become_user: root
+  serial: 2
+
+
+  tasks:
+
+    # purpose of this task to check if application is running or stopped
+    - name:  verify application/database processes are not running
+      shell: if ps -eaf | egrep 'apache|http'|grep -v grep > /dev/null ;then echo 'process_running';else echo 'process_not_running';fi
+      ignore_errors: true
+      register: app_process_check
+
+    # this task is decision,play will fail/quit,if application is running
+    - name:  decision point to start patching
+      fail: msg="{{ inventory_hostname }} have running Application.Please stop the application first, then attempt patching."
+      when: app_process_check.stdout == "process_running"
+
+    # this task will upgrade/install the rpm's if application is stopped
+    - name:  upgrade all packages on the server
+      yum:
+       name="kernel"
+       state=latest
+      when: app_process_check.stdout == "process_not_running" and ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      register: yum_update
+
+    # this task is to check if kernel update happend and system needs reboot ot not
+    - name: check if reboot required after kernel update.
+      shell: KERNEL_NEW=$(rpm -q --last kernel |head -1 | awk '{print $1}' | sed 's/kernel-//'); KERNEL_NOW=$(uname -r); if [[ $KERNEL_NEW != $KERNEL_NOW ]]; then echo "reboot_needed"; else echo "reboot_not_needed"; fi
+      ignore_errors: true
+      register: reboot_required
+
+    # this task is to restart the system
+    - name: restart system
+      command: shutdown -r +1  "Rebooting System After Patching"
+      async: 0
+      poll: 0
+      when: reboot_required.stdout == "reboot_needed"
+      register: reboot_started
+      ignore_errors: true
+
+    # this task is to wait for 3 minutues for system to come up after the reboot
+    - name: pause for 180 secs
+      pause:
+        minutes: 3
+
+    # this task is to confirm,system is up and responding to ssh
+    - name: check if system responding to ssh
+      local_action:
+        module: wait_for
+          host={{ inventory_hostname }}
+          port=22
+          delay=15
+          timeout=300
+          state=started
+      when: reboot_started|changed
+
+
+
+
+ansible -m setup all | grep ansible_distribution      //This will give os version of host 
+
+ansible -m ping all
+
+ansible myservers -m shell -a "uname -a;uptime"    //To run shell commands
+
+ansible myservers -m shell - "ps -eaf | grep httpd" 
+
+
+ansible-playbook linuxpatching.yml
+
+
+ansible myservers -l myserver2 -m shell -a "systemctl stop httpd" 
+
+
+
+
+
+-------
+
+
+
+cd /etc/ansible
+
+vim apache.yml
+
+---
+- hosts: webservers
+  user: root
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: 1. Install apache httpd
+      yum: name=httpd state=present
+    - name: 2. start httpd service
+      service: name= httpd state=started enabled=yes
+    - name: 3. Copy index.html file
+      copy: src=/tmp/index.html dest=/var/www/html/index.html mode=0664
+    - name: 4. add apache iptable rule
+      command: /sbin/iptables -I INPUT 1 -p tcp --dport http -j ACCEPT -m comment --comment "Apache on Port 80"
+    - name: 5. Save iptable rul
+      command: iptables-save
+
+
+
+ansible-playbook apache.yml --check   //to check whether it will run or not
+
+ansible-playbook apache.yml -i /etc/ansible/hosts -l webserver
+
+now check in client machine using below command
+------------------
+links http://ipaddress       //This will hit url
+
+
+
+password hashing - used to give hash of the password
+----------------
+
+python -c -import crypt,getpass; print crypt.crypt(getpass.getpass())'
+
+
+or
+
+
+openssl passwd -1 -salt $(openssl rand -base64 6) mypassword
+
+
+----
+
+
+command to check password hashing algorithm
+--
+authconfig --test | grep "password hashing algorithm"
+
+or
+
+from ansible give below command
+ansible webserver -m shell -a "authconfig --test | grep 'password hashing algorithm'" -s
+
+
+------
+
+
+userpassword.yml playbook to create user and give password. then for changing root password
+
+---
+- hosts: all
+  user: robin
+  become: yes
+  become_method: sudo
+  vars:
+    user_pass: myhashedpassword
+    root_pass: myhashedrootpassword
+  tasks:
+    - name: Create new user
+      user:
+         name: kumar
+         uid: 1112
+         comment: kumar ganesh
+         password: "{{ user_pass }}"          //Use double quote whenever we use password
+         shell: /bin/bash
+      tags: create_user
+    
+    - name: changing root password
+      user: name=root update_password=always password="{{ root_password }}"
+      tags: update_root_password
+
+
+
+ansible-playbook userpassword.yml  //This will run all tags
+
+ansible-playbook userpassword.yml --list-tags   //This will list all available tags
+
+
+ansible-playbook userpassword.yml -t create_user  //This will run only this tag
+
+ansible-playbook userpassword.yml -t update_root_password  //This will run only this tag
+
+
+
+
+----
+
+
+NTP config8
+------
+
+ansible -i /etc/ansible/hosts -m shell -a "ntpq -p" all
+
+ansible -i /etc/ansible/hosts -m shell -a "rpm -q | grep ntp" all
+
+
+
+vim ntpmanagement.yaml
+
+
+---
+
+- hosts: all
+  become_user: root
+  vars
+     ntp_server1: ntp1.syrahost.com
+     ntp_server2: ntp2.syrahost.com
+  tasks:
+     - name: remove chrony client package from system
+       yum:
+         - name=chrony
+           state=absent
+       tags: remove_chrony,start_ntp
+     
+     - name: check/install ntp client package
+       yum:
+         - name=ntp
+           state=present
+       tags: install_ntp,start_ntp
+
+     - name: deploy ntp.conf file to the clients
+       template:
+           src=templates/ntp.j2
+           dest=/etc/ntp.conf
+           owner=root
+           group=root
+           mode=0644
+           backup=yes
+        notify: start_restart_ntp_client
+        tags: copy_ntp_conf,start_ntp
+
+  handlers:
+      - name: start_restart_ntp_client
+        service:
+           name=ntpd
+           state=restarted
+           enabled=yes
+
+
+
+to run
+
+ansible-playbook ntpmanagement.yaml
+
+
+
+again check the status
+
+ansible -i /etc/ansible/hosts -m shell -a "ntpq -p" all
+     
+cat templates/ntp.j2
+
+driftfile /var/lib/ntp/drift
+restrict default nomodify notrap nopeer noquery
+restrict 127.0.0.1
+restrict ::1
+
+server {{ ntp_server1 }} iburst
+server {{ ntp_server2 }} iburst
+
+keys /etc/ntp/keys
+disable monitor
+
+---
+
+in client
+
+vim /etc/ntp.conf
+
+driftfile /var/lib/ntp/drift
+restrict default nomodify notrap nopeer noquery
+restrict 127.0.0.1
+restrict ::1
+
+server ntp1.syrahost.com iburst
+server ntp2.syrahost.com iburst
+
+keys /etc/ntp/keys
+disable monitor
+
+
+--
+
+check the date using below command
+
+ansible -i /etc/ansible/hosts -m shell -a "ntpq -p;date" all
+
+
+-------------------------------------------
+
+
+
+
+
+CIS   //do not use this
+---
+
+
+uname -a
+
+cat /etc/redhat-release
+
+cd /etc/ansible
+
+
+git clone https://github.com/major/cis-rhel-ansible.git
+
+ls -l
+
+cd cis-rhel-ansible
+
+ls -l
+
+vim hosts
+
+[rhel_centos_]
+90.10.10.85
+
+ansible-playbook playbook.yml -i hosts --list-tags
+
+ansible-playbook playbook.yml -i hosts --tags section7.1.1
+
+
+ansible-playbook playbook.yml -i hosts --tags section7
+
+ansible-playbook playbook.yml -i hosts --tags section5,section6
+
+ansible-playbook playbook.yml -i hosts  //to run all
+
+
+---------------------
+
+
+
+
+
+-------------------------
+
+ansible tips and tricks
+-----------
+
+ansible-playbook playbook.yml --list-task       //This shows all tasks 
+
+ansible-playbook playbook.yml --start-at-task="task name"       //This will start playbook from that task
+
+ansible-playbook playbook.yml --step    //Before every step it will ask permission 
+
+ansible-playbook playbook.yml --syntax-check   //This will check whether playbook is valid synctx or not
+
+ansible-playbook playbook.yml --check    //This will show how it will run. This wont make any changes in server
+
+ansible-playbook playbook.yml --list-hosts           //This will list all host 
+
+ansible-playbook playbook.yml --list-hosts -l subset   //This will list all host in subset
+
+ansible-playbook playbook.yml --list-tags    //This will list all tags
+
+ansible-playbook playbook.yml --tags tag1,tag2,tag3    //This will run only these given tags
+
+ansible-playbook playbook.yml --skip-tags tag2,tag7     //This will skip only given tags
+
+ansible-playbook playbook.yml --forks=17      //This will run the playbook in 17 machine parallely. by default it is 5
+
+ansible-playbook playbook.yml -i ipaddressorhostname,   //This will run the playbook on particullar server
+
+
+man ansible-playbook    //Shows all sub command and uses
+
+
+
+
+ansible-playbook playbook.yml --ask-pass   //To give password while starting playbook. use this if ssh key is not copied    
+
+--------
+
+ansible for windows
+
+
+ansible-playbook
+
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------
+
+files vs templates directory in roles
+-------------------------------------
+files should contain static files which wont be change
+templates should contains dynamic data which can be changed. We can use {{ variablename }} inside templates 
+
+---------------------------------------------
+
+  
+
+
+
+For hostname we can use like below
+{{ ansible_hostname }}
+
+
+
+---------------------------------------------
+
+
+
+
+--------------------------------
+
+
+Ansible
+-----------
+
+
+copy   - this will copy from ansible server to host server
+
+fetch  - this will copy from host server to ansible server
+
+file   - used to create link, folder, copy in host server
+
+
+
+
+
+ansible ad hoc command
+----
+
+ansible all -s -n shell -a 'update'   //used to check uptime
+
+ansible all -s -n shell -a 'date'     //used to check date of all server
+
+ansible all -s -n shell -a 'cat /etc/redhat-release'
+
+ansible all -s -n shell -a 'mount'
+
+ansible all -s -n shell -a 'service sshd status'    //used to check the status of service
+
+ansible all -s -n shell -a 'systemctl status httpd'   //used to check status of service
+
+
+
+
+---------------------------
+
+
+
+ansible installation
+--------------------
+
+Step 1:
+yum update
+
+step 2:
+yum install epel-release
+
+step 3:
+yum install ansible
+
+step 4:
+ansible --version
+
+---------------------------
+
+To generate ssh key connection
+-----------------------------
+
+In ansible server give below
+
+ssh-keygen
+
+ssh-copy-id -i root@ipaddressorhostname   //give host node ip address
+//give password
+
+
+
+-----------------------
+
+vi /etc/ansible/hosts
+
+[test-server]
+192.168.40.174    //node machine ip address
+
+
+-----------------------
+
+To check ping command using ansible
+
+ansible -m ping 'test-server'
+
+
+-----------------------
+
+
+vi nginx.yml    //nginx playbook
+-----------
+
+---
+
+- hosts: test-server
+
+  tasks:
+
+    - name : install nginx
+      yum: pkg=nginx state=installed
+      notify: 
+         - start nginx
+
+  handlers:
+    - name: start nginx
+      service: name=nginx state=started
+
+
+
+To run
+---
+ansible-playbook nginx.yml
+
+
+----------------------------------------------------
+
+
+
+
+Ansible
+--------
+
+
+
+install wget
+
+download epel-release using wget
+
+install epel-release rpm using rpm command
+
+
+
+
+To log all logs go to ansible.cfg file and uncomment log
+
+
+If the host is new and not yet used uncomment below in ansible.cfg
+host_key_checking = False
+
+
+
+
+To take different ansible.cfg. give like below
+export ANSIBLE_CONFIG=/path/of/new/Conffile.cfg
+
+
+
+ansible all --list-hosts   //This will show all available hosts
+
+ansible -m ping    //This will ping to all hosts
+
+ansible myhost -m ping   //This will ping only particular hosts
+
+
+
+
+
+
+
+-----------------
+
+yum list installed    //This will show all installed packages
+
+set | grep -i maven   //This will show the path of given
+
+
+    
+
+
+download epel-release from below or install like below . then only we can install ansible
+yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+
+
+
+
+

@@ -1,0 +1,268 @@
+
+In pom.xml
+------------
+------------
+
+inside <project> tag add like below
+
+
+
+
+<profiles>
+ <profile>
+	<id>jacoco</id>
+	<build>
+	 <plugins>
+	  <plugin>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<version>3.6.1</version>
+		<configuration>
+		 <source>1.8</source>
+		 <target>1.8</target>
+		 <encoding>UTF-8</encoding>
+		</configuration>
+	  </plugin>
+	  <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-surefire-plugin</artifactId>
+		<version>2.16</version>
+		<configuration>
+		 <useSystemClassLoader>false</useSystemClassLoader>
+		 <suiteXmlFiles>
+		  <suiteXmlFile>${suiteXmlFile}<suiteXmlFile>
+		 </suiteXmlFiles>
+		 <reportsDirectory>./test-output/surefire/${timestamp}</reportDirectory>
+		</configuration>
+	  </plugin>
+	  <plugin>
+		<groupId>org.jacoco</groupId>
+		<artifactId>jacoco-maven-plugin</artifactId>
+		<version>0.7.6.201602180812</version>
+		<configuration>
+		 <destFile>${basedir}/jacoco.exec</destFile>
+		 <reset>true</reset>
+		</configuraion>
+		 <executions>
+		   <execution>
+			<id>dump</id>
+			<phase>integration-test</phase>
+			<goals>
+			 <goal>dump</goal>
+			</goals>
+		   </execution>
+		 </executions>
+	  </plugin>
+	 </plugins>	
+	</build>
+ </profile>
+</profiles>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------
+
+
+
+
+In Jenkins job configure
+------------------------
+------------------------
+
+Parameter
+----------
+
+jacoco_skip
+false
+
+restart_service_for_jacoco
+false
+
+jacoco_host
+ip address of application
+
+jacoco_port
+9892
+
+dev_code_branch
+intergration                 
+
+use_workspace_for_dev_code
+false
+
+
+Shell:
+------
+
+if [[ "${jacoco_skip}" == "false" ]]; then
+	
+	service="idea"
+
+	if [[ "${restart_service_for_jacoco}" == "true" ]]; then
+		if [[ "${isDockinsEnabled}" == "false" ]]; then
+			/var/lib/jenkins/restart-service stage ${service}
+		else
+			/var/lib/jenkins/restart-service ${dockEnvName} ${service}
+		fi
+	fi
+
+	if [[ "${use_workspace_for_dev_code}" == true ]]; then
+		if[[ "${isDockinsEabled}" == "true" ]]; then
+			job="Idea-${dockEnvName}"
+		else
+			job="Idea=${environment}"
+		fi
+		wget -O workspace.zip http://dockins.myntra.com/job/${job}/ws/service/*zip*/service.zip
+		unzip workspace.zip -d ${service}
+		rm -rf workspace.zip
+	else
+		git clone -b ${dev_code_branch} git@bitbucket.org:myntra/idea-service.git ${service}
+		cd ${service}
+		./gradlew :service:clean :service:compile:compileJava
+	fi
+
+	if [[ "${isDockinsEnabled}" == "true" ]]; then
+		host_port=`/var/lib/jenkins/jacoco-port ${dockEnvName} ${service}`
+		host_port_arr=(${host_port//,/ })
+		jacoco_host=${host_port_arr[0]}
+		jacoco_port=${host_port_arr[1]}
+	fi
+fi
+
+echo -e "jacoco.skip=${jacoco_skip}\njacoco.address=${jacoco_host}\njacoco.port=${jacoco_port}" > $WORKSPACE/env.properties
+
+
+
+
+
+
+
+
+
+
+inject environment variable
+--
+$WORKSPACE/env.properties
+
+
+
+
+
+
+
+Maven
+---
+
+clean test dumpJacoco -Ddashboard.enabled=true -DsuiteXmlFile=src/test/resources/test-suites/sanity-testng.xml -Djacoco.skip=${jacoco.skip} -Djacoco_address=${jacoco.address} -Djacoco.port=${jacoco.port} 
+
+
+
+
+
+
+
+
+
+Record Jacoco coverage report
+--------
+
+Path to exec files:		Path to class directories			Path to source directories
+**/**.exec			**/idea/service/build/classes/main		**/idea/service/src/main/java
+
+
+inclusion				Exclusions
+					**/*Test*.class
+
+
+
+
+
+
+---------------------------------------
+
+
+
+In server
+-----------
+------------
+
+
+cd /myntra
+
+ls
+idea jacocoagent.jar	jacocoagent.tar.gz
+
+
+
+cat setenv.sh
+
+wget -N http://dockins.myntra.com/packages/jacocoagent.tar.gz -O /myntra/jacocoagent.tar.gz
+tar -xzvf /myntra/jacocoagent.tar.gz -C /myntra/
+export CATALINA_HOME=/opt/tomcat/tomcat8
+export CATALINA_BASE=/myntra/$APP/
+export CATALINA_OPTS="CATALINA_OPTS"
+export JAVA_HOME=/usr/java/jdk1.8.0_65
+export JAVA_OPTS="$JAVA_OPTS -server -Xmx1024m -Xms1024m -XX:MaxPermSize=256M -Dspring.profiles.active=index -javaagent:/myntra/jacocoagent.jar=output=tcpserver,port=9892,append=true,dumponexit=false,classdumpdir=/myntra/$APP/classes-cov/,includes=com/myntra/idea/**,address=* -Dlog4j.configurationFile=$CATALINA_BASE/conf/logger.json"
+export CLASSPATH="$CATALINA_BASE/conf:$CLASSPATH"
+export CATALINA_PID=/myntra/$APP/pid
+echo "10.161.0.7 qa_lg1 qa-lg1" >> /etc/hosts
+
+
+
+
+cat startup.sh
+
+. /myntra/$APP/bin/setenv.sh
+mkdir -p /myntra/$APP/logs
+if [ -d "$CATALINA_HOME" ]; then
+	cd $CATALINA_HOME/bin
+	./startup.sh "$@"
+else
+	echo "$CATALINA_HOME does not exist"
+fi
+
+
+
+
+
+cd /myntra/idea/classes-cov
+
+cd com/myntra/....            //like package
+
+
+
+----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

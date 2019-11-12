@@ -1,0 +1,26 @@
+vagrant -v     //Gives version
+
+We can find many vagrant box in vagrant site
+
+
+vagrant box add boxname    Eg: vagrant box add ubuntu/trusty64
+
+
+
+vagrant init boxname   Eg: vagrant init ubuntu/trusty64
+
+                        //now we can find vagrantfile here
+
+
+vagrant up             //to start
+
+
+vagrant ssh         //To connect to box
+
+if above gives error give below
+
+vagrant ssh-config
+
+
+Eg:
+ssh vagrant@127.0.0.1 -p 222 -i /private/key/path

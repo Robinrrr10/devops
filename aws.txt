@@ -1,0 +1,295 @@
+AWS
+---
+----
+
+
+
+Aws compute services  
+--------------------
+
+EC2 - is raw 
+Lamda - used to execute baground task. not for hostings
+Elastic beanstack - is for application with environment
+Elastic load balancer - is for load balancer
+AutoScaling   - used to auto start/stop scalling server
+
+
+
+AWS storage services
+-----------------------
+
+S3  - used to save the data (it will save object(data) in a bucket)
+
+Cloudfront  - this will offer the server which is near your location. so that the response time will reduce
+
+Elastic block storage - so same hart drive will be connected to many number of servers like CE2
+
+Glacier - used to store data which will be used very rarelys
+
+Snowball  - to send large data pysically in harddrive(if it is not possible in internet)
+
+
+Storage gateway  - used to take snapshot and save in S3 server. if any fails it will restore using snapshot
+
+
+
+
+
+AWS database services
+----------------
+
+RDS   - this will manage relational database like mysql, postgressql
+
+Aurora - is based on mysql. it is 5 times faster than other
+
+DynamoDB - this will manage non relation database(for nosql). this is used for cassandra etc
+
+ElasticCache - used to store data of the query. (if any query request comes, it will store the result. when the same request comes again. it will fetch from this cache)
+
+Redshift - used to analysis tool for analyse data
+
+
+
+--------------------------
+
+
+AWS networking services
+-----------------------
+
+VPC   - can used within aws servers
+
+ 
+Direct Connect    - directly connecting your server// any servers 
+
+
+Route 53    - This is DNS
+
+
+
+------------------------------
+
+
+AWS management services
+-----------------------
+
+
+CloudWatch - used to watch all instance. this used to set alaram based on requirement. Eg: if CPU usage goes more than 90% this will send email
+
+CloudFormation - used to copy template the instance server
+
+CloudTrail   - used to log request and response
+
+CLI   - Command line interface to work in AWS
+
+OpsWorks  - This is confirguration management 
+
+Trusted advisor  - This will give advise about the instance
+
+
+
+-------------------------------
+
+
+AWS Security domain
+------------------
+
+
+IAM - Giving access to user in server
+
+
+ etc
+
+
+KMS - This will give key for connecting to server
+
+
+-------------------------------
+
+
+
+AWS application services
+-------------------------
+
+SES  - to send bulk email
+
+SQS  - It act as buffer. This is like queing
+
+SNS  - Used to send notification to other servers/instances
+
+----------------------------------
+
+AWS Pricing
+-----------
+
+Pay as you go   - Pay money for how much we use
+
+Pay less by using more  - When usage is more, price will start reduce
+
+Save when you reserve  - used to reserve and can save upto 75%
+
+------------------------------------
+
+Hosting a website
+----------------
+
+
+
+------------------------------------
+
+------------------------------
+
+
+------------------------------------
+
+
+Get free domain name
+
+my.dot.tk
+
+my.freenom.com
+
+
+
+------------------------------------------
+
+
+
+
+jenkins in aws
+-------------------
+
+EC2
+ubuntu
+t2 free tiar
+
+review and launch
+
+create new key pair and download
+
+create another test server
+
+
+
+
+
+download putty gen in your local windows
+This is used to connect
+Load that key
+and click save private key
+While connecting give auth and select that key file
+
+To install jenkins
+--
+sudo apt-get update
+
+sudo apt-get install default-jdk
+
+sudo wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
+
+sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.lisst'
+
+sudo apt-get update
+
+sudo apt-get install jenkins
+
+open jenkins port in aws dash board
+
+Give that public ip address in our local pc browser and check whether it is connecting or not
+
+
+
+
+
+To set up test server
+---------
+
+sudo apt-get update
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo add-apt-repository "deb [arch-amd64] https://downloaad.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+sudo apt-get update
+
+apt-cache policy docker-ce
+
+sudo apt-get install -y docker-ce
+
+
+
+To install browser in ubuntu system         //for ubuntu server ubuntu is user name
+---------------------------
+
+sudo apt-get install chromium-browser
+
+sudo apt-get install chromium-chromedriver
+
+sudo apt-get install default-jdk
+
+
+
+
+
+
+
+
+
+To connect jenkins to slave
+--------------------------
+In master jenkins-> manage jenkins -> configure system
+Agents select random
+
+Then in jenkins -> manage jenkins -> manage nodes
+
+give node name as slave
+
+give permanent
+
+Give remote root directory . where our files should save in slave
+
+copy below commnad
+
+
+
+click launch and download slave-agent.inlp
+click on agent.jar to download
+
+copy both file in /home/ubuntu in slave 
+
+cd /home/ubuntu
+ls     
+
+paste copied command in slave
+
+now check in jenkins. it will show that node is connected
+
+
+
+
+go to slave and give below command 
+
+sudo docker run -t -d ubuntu  //To start ubuntu image 
+
+sudo docker images
+
+sudo docker run -it -d -p 80:80 imageid
+
+sudo docker ps
+
+sudo docker exec -it containerid bash
+
+inside container
+
+service status apache2
+
+apt-get install apache2
+
+service apache2 restart
+
+now hit the host url with this port nd check
+
+now in slave
+sudo docker kill containerid
+
+
+

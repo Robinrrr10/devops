@@ -1,0 +1,236 @@
+Git
+---
+To initialize the repository give below command
+Go to directory you need to initialize git
+cd /home/myweb
+git init
+
+
+To add any file in repo give below command
+git add filename    Eg: git add file.java   or you can use git add . //to add all changes or git add -A   //this also you can use
+
+To check the status of the repo. what are files are changed, what are the files added etc give below command
+git status
+
+To add the file in local pc repo give commit command with message
+git commit -m "give any message here"
+
+To add remote repository for local pc repo, we need to add the url of remote repository using below command
+git add remote origin "urlof remote repo"            Eg: git add remote origin "https://github.com/robinrrr10/myweb.git"
+
+To get the files and changes in remote git repository we need to give give below pull command
+git pull origin branchname       Eg: git pull origin master
+
+To copy the local files to remote git repository, give below command
+git push origin branchname       Eg: git push origin master
+
+
+
+
+
+To create new repository give below command
+git init
+
+git remote add origin "gitrepourl"  //Used to repository url to project  Eg: git remote add origin "https://github.com/robinrrr10/myweb.git"   //This will link project to the url
+
+git clone  url  //To clone existing project  Eg: git clone https://github.com/robinrrr10/myweb.git
+
+git status   //this will give modified files, newly added files and show information of deleted files. Basically it will show all untracted files of repo
+
+git add filename   //to add the file Eg: git add index.html
+
+git commit -m "commit message"  //This is to confirm the changes. This will push code to local repository of the pc
+
+git add -A    //This will add all changes. This works like command: git add .
+
+git commit -a -m "commit message"   //This is to add all files and commit. Donot use -a if any new files are added. This will work only for file modification. This wont work for newly added files
+
+git all        //Will give detail about history of commit
+
+git branch   //will all available branches
+
+git branch newbranchname   //This is to create branch  Eg: git branch develop   //new branch will be created with master branch code.
+
+git checkout branchname    //To switch to the branch. To move from one branch to another  Eg: git checkout develop    //Now you will be moving to develop branch
+
+git merge branchname     //This will merge givenbranch with current branch. Eg: git merge develop    //This will merge develop branch code to current branch. If your current branch is master, now the master contains all changes of develop branch. but in develop branch there wont be any change
+
+git rebase branchname    //This will merge givenbranch with current branch as like merge. But it will also takes all commit details of the givenbranch to the current branch. So whole history is maintained
+
+git push origin branchname   //This will push the changes to remote repository. If there is no branch in remote, it will automatically create the branch.   Eg: git push origin develop
+
+
+git mergetool        //This will open merging tool. This will open in txt editor''
+
+
+git rebase --continue       //This will commit after resolving conflict using mergetool
+
+
+git tag  //This will show all tags
+
+git tag newtagname        //Use to create tag Eg: git tag v1.0   //It is the version
+
+git push origin --tags     //Used to push the tag
+
+git clone         //To clone whole repository
+
+git checkout tagname         //To switch to particular tag      Eg: git checkout v1.0   //to switch to particular tag
+
+git checkout tagname -b newBranchname  //To create new branch from a tag  Eg: git checkout v1.0 -b develop
+
+git show v1.0         //This will show infomation of tag like creation date, commit, auther etc
+
+
+Tags   //This is for adding vesion
+Pull request //This is used to review and ask them to merge the one branch with anotherbranch
+
+
+git checkout commitIdOrshd  // To move to particual commit  Eg: git checkout 0d1d7fc32
+
+
+git branch -d branchname    //To delete the branch
+
+
+git branch -D branchname   //This will delete branch even it is not merged
+
+
+git checkout -b newbranchname  //Create new branch with copy of current branch and it will switch to new branch
+
+
+
+
+git stash     //To remove new changes. This will revert back to previous . This will save in stash
+
+git stash -U  //To remove new changes and save in stash
+
+git stash list  //This will list all stash 
+
+
+git stash show   //This wil show all stash
+
+git stash apply   //This will again give new changes
+
+
+
+
+git log      //This will show all commit log. This is like history
+
+
+git log -before="givedate"  //This will show logs before given date
+
+git log --authod="authorname"  //This will show commit made by particular user
+
+
+
+
+git log --oneline    //This will show last commit
+
+
+git revert commithash   //This will revert to give commithast Eg: git revert 8hj67hy
+
+
+git revert HEAD   //This will rerevert again. Go to recent one. Go to HEAD
+
+git rebase master  //merge all commits of all branch with master
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+To set user globally
+--------------------
+git config --global user.name "robinrrr10"        //to set git user globally
+git config --global user.email "robinrrr10@gmail.com"       //to set git user email globally
+
+
+To set user in one repository
+-----------------------------
+git config user.name "robinrrr10"                    //To set git user for current repository
+git config user.email "robinrrr10@gmail.com"        // To set git user email for current repository
+
+
+
+
+
+
+
+
+
+To revert back to previous changes.file:
+-----
+First check the log using below command
+git log         //This will give all commit with commit message and commit code
+
+Copy first 8 digit of the commit Id. where we need to revert to particular file
+
+give below commad
+git checkout first8digitofcommitid filename   //This will revert the file to particular commit Eg: git checkout 09hbja3s index.html    //Now the index.html will be reverted back to the give commit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Github
+------
+While creating new repository if you tick "Initialize this repository with a README", then it will create repo which contains readme file
+
+While creating new repository it self we can add .gitignore
+
+We can edit any file in github web itself and we can commit there it self
+
+to get the url of the repo go the project repository, click clone or download copy the url link
+
+To use ssh clien clone or download. Then dropbox in left side corner click use ssh
+
+
+To connect github to local pc using ssh key:
+
+ssh-keygen         //to gendrate public key
+
+copy the content of file id_rsa.pub
+
+Go to github
+
+Go to settings
+
+Go to ssh and gpg keys
+
+click new ssh key
+
+just give any title name
+
+in key paste the copied content of id_rsa.pub
+
+to authencate successfully type below command
+ssh -T git@github.com                  //Here we will success message
+
+Now check the ssh key. The key will become green color
+
+
+
+
+
+
+

@@ -1,0 +1,161 @@
+NTP - network time protocol
+---------------------------
+
+Used to config same time in all servers
+
+This uses UDP protocol.
+
+It uses port 123 by default
+
+ 
+
+We can use NTP or chrony for NTP
+
+
+---------------
+
+
+NTP
+===
+
+ntp in main ntp server
+------
+
+yum -y install ntp
+
+vim /etc/ntp.conf
+
+add below
+
+restrict 192.168.40.140 mask 255.255.255.0 nomodify  notrap            //Give ip address
+
+systemctl enable ntpd
+
+systemctl start ntpd
+
+firewall-cmd --permanent --add-service=ntp
+
+firewall-cmd --reload
+
+ntpq -p     //to verify
+
+
+
+
+system-config-date         //To change the date
+
+
+
+ntp in client
+------
+
+yum install ntp
+
+vim /etc/ntp.conf
+
+add below 
+
+server serverhostname iburst prefer   //Eg:    server 192.168.40.140 iburst prefer
+
+systemctl enable ntpd
+
+systemctl start ntpd
+
+systemctl status ntpd
+
+ntpq -p           //Here it will show ntp main server ip address also
+
+ntpdate -d serverhostname   //This will sync the time   Eg: ntpdate -d 192.168.40.140
+
+
+
+
+
+
+
+
+
+--------------------
+--------------------
+
+
+
+chrony
+======
+
+
+main server ntp machine
+-------
+
+yum install chrony
+
+systemctl enable chronyd
+
+systemctl start chronyd
+
+systemctl status chronyd
+
+vim /etc/chrony.conf
+
+
+
+server 3.it.pool.ntp.org iburst
+server 1.europe.pool.ntp.org iburst
+server 2.europe.pool.ntp.org iburst
+
+allow 192.168.1.0/24
+
+firewall-cmd --permanent --add-service=ntp
+
+firewall-cmd --reload
+
+firewall-cmd --list-all
+
+systemctl reload chronyd
+
+systemctl restart chronyd
+
+timedatectl status
+
+
+
+
+
+in client machine
+----
+
+yum install chrony -y
+
+vim /etc/chrony.conf
+
+command all servers and add only ntp server machine
+
+server 192.168.1.2 iburst        //here give ntp main server ip address
+
+save it
+
+systemctl enable chronyd
+
+systemctl start chronyd
+
+systemctl status chronyd
+
+chronyc sources
+
+timedatectl status
+
+timedatectl set-timezone Europe/Rome
+
+timedatectl status
+
+chronyc tracking
+
+
+--------------------
+
+
+
+
+
+
+

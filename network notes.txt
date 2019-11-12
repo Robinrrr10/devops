@@ -1,0 +1,66 @@
+
+Firewall commands
+-----------------
+-----------------
+
+To open the port
+----------------
+
+firewall-cmd --permanent --add-port=8080/tcp  //Used to open the port the permanent . If we not used --permanent command it wontt work afte reload
+
+firewall-cmd --reload       //Used to reload firewall configuration with current settings
+
+
+
+or 
+firewall-cmd --zone=public --permanent --add-port=8080/tcp 
+
+----------------------------------
+
+
+To close the port 
+----------------
+
+firewall-cmd --permanent --remove-port=8080/tcp  //Used to close the port the permanent . If we not used --permanent command it wontt work afte reload
+
+firewall-cmd --reload       //Used to reload firewall configuration with current settings
+
+
+
+or 
+
+firewall-cmd --zone=public --permanent --remove-port=8080/tcp
+
+------------------------------------
+
+
+To port forward or to redirect the port    //This will be forwarded to given port in local
+---------------------------------------
+firewall-cmd --zone=public --permanent --add-masquerad  
+
+firewall-cmd --zone=public --permanent --add-forward-port=port=80:proto=tcp:toport=8085       //To forward the port to 8085. When user call the port 80 it will internally forward to 8085
+
+firewall-cmd --reload
+
+-----------------------------------------------
+
+To ip/port forward or to redirect the ip/port with ip address //This will be forwarded to remote ip with remote ip port
+--------------------------------------
+
+firewall-cmd --zone=public --permanent --add-masquerad  
+
+firewall-cmd --zone=public --permanent --add-forward-port=port=80:proto=tcp:toport=8085:toaddr=192.168.99.100       //To forward the port to 192.168.99:8085. When user call the localhost/local ip with port localhost:80 it will internally forward to 192.168.99.1008085
+
+firewall-cmd --reload
+
+
+
+-----------------------------------------------
+
+
+
+tcpflow -p -c -i eth0 port 80   //to check http request
+
+
+
+------------------------------------------------------

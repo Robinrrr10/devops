@@ -1,0 +1,1204 @@
+Docker notes
+------------
+
+
+
+Docker installation in linux
+----------------------------
+Requirement
+-----------
+Should have 64 bit
+
+sudo yum -y update
+
+sudo yum -y install docker         - to install docker
+
+docker --version
+
+docker info                 - this will give information whether docker is started/running or not
+
+sudo service docker start            - to start docker
+
+docker info                 - this will give information whether docker is running or not
+
+sudo usermod -a -G docker username           - to add user group to the docker   Eg: sudo usermod -a -G docker root
+
+docker images          - this will list all images
+
+sudo service docker stop   - to stop docker
+
+sudo yum remove docker    - to uninstall docker
+
+
+Docker commands
+---------------
+
+docker images          - this will list all images
+
+docker ps              - this will list running container
+
+docker ps -a           - this will list all container
+
+docker run imagename    - This is used to create the container using this image Eg: docker run hellow-world. If image is not in local it will pull from docker hub
+
+docker                 - this will list all sub command and use of the other commands
+docker --help          - this will list all sub command and use of the other commands
+                       - we can also use --help to show use of sub command Eg: docker images --help or docker rmi --help  or docker ps --help
+
+
+docker -v              - display the version of docker
+docker --version       - display the version of docker
+
+docker version         - display the version of docker client and docker server(engine)
+
+docker info            - give information whether docker is running or not. and gives total container, running container, total images etc
+
+docker login           - used to connect with docker hub. We can give docker hub username and password
+
+docker pull imagename   - used to pull docker image from docker hub. it will first search in your account if it is not there then it will search public repo etc
+
+docker images -a       - list all images
+
+docker images -q       - list all images id
+
+docker rmi imagename     - used to delete the image Eg: docker rmi ubuntu
+
+docker rmi imageId     - used to delete the image Eg: docker rmi 98798yii87yy
+
+docker rmi -f imagename     - used to delete the image forcefully Eg: docker rmi -f ubuntu
+
+docker rmi -f imageId    - used to delete the image forcefully   Eg: docker rmi -f 98798yii87yy
+
+docker run -it imagename  - used to run the container and loged into it Eg: docker run -it ubunut
+
+docker rmi imagename:tagversion     - used to delete the image of particular tag version Eg: docker rmi ubuntu:18.04
+
+docker run --name givecontainername -it imagename     - This is used to run the container and to give new container name  Eg:docket run --name MyUbuntu -it ubuntu
+
+docker run imagename bash   - used to run the container and open/run bash      Eg: docker run ubuntu bash
+
+docker start containerId   - to start container Eg: docker start iu8uibi876y
+
+docker stop containerId   - to stop container
+
+docker start containername   - to start container Eg: docker start MyUbuntu
+
+docker stop containername   - to stop container
+
+docker pause containername    - to pause the container   Eg: docker start MyUbunut
+
+docker unpause containerName   - to unpause/resume the container
+
+docker pause containerId    - to pause the container
+
+docker unpause containerId   - to unpause/resume the container
+'
+docker top containerName   - to show running PID in container
+
+docker top containerId   - to show running PID in container
+
+docker stats containerName   - show current details of cpu, ram and memory used in container
+
+docker stats containerId   - show current details of cpu, ram and memory used in container
+
+docker attach containerName   - to go inside container
+
+docker attach containerId   - to go inside container
+
+docker kill containerId   - to kill the container
+
+docker kill containerName  - to kill the container
+
+docker rm containername   - to remove the container. It will delete the container
+
+docker rm containerId    - to remove the container. It will delete the container
+
+docker inspect containername   - to show container content/details
+
+docker exec -it containerId bash   - to go into container terminal
+
+docker stats             - show current details of cpu, ram and memory used by the containers 
+
+docker system df         - shows details of total images, contains and total occupied memory space in disk
+
+docker system prune      - used to remove all stopped container
+
+docker system prune -a   - used to remove all stopped container and its images
+
+docker pull imagename:tagversion   - used to pull particular vesion of the given image Eg: docker pull ubuntu:18.04
+
+docker images -f "dangling=true"    - this will give images which are associated with container  
+
+docker images -f "dangling=false"    - this will give images which are not associated with container
+
+docker inspect imagename            - to see all image content/details        Eg: docker inspect ubuntu
+
+docker history imagename            - it will show history of the image
+
+docker volume volumename            - used to create a volume
+
+docker volume ls                    - This will list all volume
+
+docker run imageId                  - to run create the container from image Eg: docker run 8h9hklj8yq
+
+
+
+docker cp file containername:/path/to/copy   - to copy files or directory from main machine to container  Eg:  docker cp dbInstall.sql mymysql6:/home
+
+docker exec -it mymysql6 mkdir directorytocreate    - to create directory from in container when we are in main machine Eg: docker exec -it mymysql6 mkdir /home/myfolder 
+
+
+Eg:
+
+docker run --name mymysql5 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql    // Here -e is for setting environment variable
+
+Docker file commands
+--------------
+FROM
+RUN
+CMD
+
+The file should be in the name Dockerfile    //we can use any name. default it will search for this name
+
+FROM baseimagename    //This will create a image from base Eg: FROM ubuntu
+
+FROM scratch//If base image is not required just use this command
+
+MAINTAINER name <emailId>   //This is for who created the image Eg: MAINTAINER robin <robinrrr10@gmail.com>
+
+RUN anycommandtorun     //This for running a command Eg: RUN mvn -version
+
+CMD ["command", "suborvalueofcommand"]   //To run a command while image creation Eg: CMD ["echo", "Hello world"]
+
+RUN   - will execute while creating the image
+CMD   - will execute while creating the container
+
+
+Refer below link for Dockerfile commands:
+
+https://github.com/wsargent/docker-cheat-sheet#dockerfile
+
+https://docs.docker.com/engine/reference/builder/#environment-replacement
+
+
+CMD myscript.sh -D FOREGROUND      //To run on foreground
+
+-----
+
+
+
+
+docker build dockerfilepath   //To build docker image from Dockerfile Eg: docker build /home/mydockerfile/
+
+docker build -t imagename dockerfilepath   //Used to build docker image with name Eg: docker build -t myimage /home/mydockerfile
+
+docker build -t newimagename:tagversion dockerfilepath   //Used to build docker image with tag version Eg: docker build -t myimage:0.1 /home/mydockerfile
+
+
+
+-------------------------
+
+
+
+Docker compose   - This is used to up and down many more container
+--------------
+
+To install Docker compose in linux go to below link                               or we can also install using command: pip install -U docker-compose
+https://github.com/docker/compose/releases
+
+
+Copy the command given below two commands in above web page and give in terminal
+curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+chmod +x /usr/local/bin/docker-compose                                                   
+
+
+docker-compose version    - This will give version of docker-compose
+
+
+create docker-compose.yum file using below command
+vi docker-compose.yml
+
+Give as below
+
+version: 'versionofdocker-compose'                      version is IMPORTANT
+services:
+
+   service1name:                            
+    image: image1name
+
+   service2name:
+   image: image2name                                    //We can add any number of services
+
+
+
+Example1 docker-compose.yum
+
+version: '3.7'                      version is IMPORTANT
+services:
+
+   web:                            
+    image: tomcat
+
+   db:
+   image: jenkins
+    ports:
+      - 8181:8080                 //For port redirection. The contains 8080 port will be read in 8181 port of main server
+
+
+Example2 docker-compose.yum
+
+
+version: '3.7'
+services:
+
+   web:
+    image: tomcat
+    ports:
+      - 8080:8080
+
+   db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+
+
+
+Then give below command to validate whether the file is valid or not
+docker-compose config
+
+
+docker-compose up      - to start docker-compose         - This will start all services in docker-compose.yum
+
+docker-compose down    - to stop docker-compose          - This will stop all services in docker-compose.yum
+
+
+
+docker-compose up -d --scale servicename=noofcontainer  - This will up all services in docker-compose.yum. This will create given number of container for certain service name Eg: docker-compose up -d --scale web=5         //This will up all services in docker-compose.yum .create 5 web containers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Jenkins on docker container
+---------------------------
+docker pull jenkins             - to get jenkins image
+
+docker run -p 8080:8080 -p 50000:50000 jenkins    - to create jenkins container. ( -p 8080:8080) Here the port 8080 of main server is redirected to 8080 of container. ( -p 50000:50000) the port of 50000 of main server is redirected to 50000 of the container
+
+or 
+
+docker run -p 8080:8080 -p 50000:50000 -v /home/myjenkins:/var/jenkins_home jenkins  - to create jenkins container. Here port is al like above. Here the /home/myjenkins of main is pointed to /var/jenkins_home. So all data of jenkins will be stored in main server's /home/myjenkins also. This can be used even this container is deleted or new jenkins container is started in the same manner
+
+or 
+
+docker run --name myjenkins -p 8080:8080 -p 50000:50000 -v myJenkinsVolume/var/jenkins_home jenkins   - Here also port redirection is done and here the container is created with container name myjenkins. and data will be stored in volume myJenkinsVolume. In here the volume name is myJenkinsVolume
+
+---------------------------------
+
+docker volume
+--------------
+Used to for storage and that store can be shared in many more containers
+
+docker volume --help      -this will list all comands
+
+docker volume create volumename   - to create new volume Eg: docker volume create myvolume
+
+docker volume ls              - list all available docker volumes
+
+docker volume inspect volumename    - to show details of volume in json Eg: docker volume inspect myvolume
+
+docker volume rm volumename    - remove volume   Eg: docker volume rm myvolume
+
+docker volume prune             - to remove unused volume
+
+docker run -v volumename:/var/jenkins_home jenkins    - It will assign local docker volume and start the container Eg: docker run -v myvolume:/var/jenkins_home jenkins      //All data of the jenkins will be stored in myvolume
+
+docker run -v localpath:/var/jenkins_home jenkins      - it will use local path for all store and start the container Eg: docker run -v /home/jenkinsdir:/var/jenkins_home jenkins  //all data will be stored in /home/jenkinsdir
+
+
+
+Docker swarm
+-------------
+To install docker-machine in go to below link and refer
+https://docs.docker.com/machine/install-machine/#installing-machine-directly
+
+To install docker-machine in linux give below command
+
+ base=https://github.com/docker/machine/releases/download/v0.16.0 &&
+  curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
+  sudo install /tmp/docker-machine /usr/local/bin/docker-machine
+
+Once install check whether docker-machine is installed or not using below command
+
+docker-machine -v                   //show docker-machine version
+
+docker-machine create --diver virtualbox machinename   //To create Virtual machine  Eg: docker-machine create --driver virtualbox myvm1
+
+                                    //If we get any errorVBoxManage not found. then please install virtual box Eg: yum install virtualbox
+
+
+docker-machine ls         //to show all available docker-machine
+
+docker-machine ip machinename   //to show ip address of the machine
+
+docker-machine env machinename   //to login to the machine
+
+docker-machine ssh machinename   //to login to the machine
+
+docker swarm init --advertise-addr ipaddressofmachine   //This will make ip address machine to main server machine. to make normal machine to swarm manager machine  //this command will be running in manager
+
+docker node ls          //this will show only main server machine. This command only work one swarm manager machine. This will give details of node of swarm
+
+docker swarm join-token worker        //This will give command to join swarm as worker. run this in manager. 
+                                  //It will give the command we can copy the command and go to worker machine and give the command. now that machine will be join as worker for this manager
+
+docker swarm join-token manager        //This will give command to join swarm as manager
+
+docker node ls           //This will show all nodes of the swarm
+
+docker info        //This will show all details of docker including swarm which shows all nodes
+
+docker swarm       //just gives all commands of swarm
+
+docker service create --replicas noofreplicas -p portnumbermain:portnumberofcontainer --name serviceName imagename //Used to create container in swarm swarm  //Run this command in manager machine
+
+Eg:   docker service create --replicas 5 -p 80:8080 --name mytomcat tomcat     //This will create 5 tomcat container in swarm with manager and worker nodes. there should be 5 machines for 5 replicas   //Run this command in manager machine
+
+docker service ls    //This will give details of running container in how many machine and status    //Run this command in manager machine
+
+docker service ps servicename    //This will give detail of running container of this service and the node. This will also show whether it is running or not   Eg: docker service ps mytomcat     //Run this command in manager
+
+docker service scale servicename=noOfScale    //This run given number of number as scale in replicas   Eg: docker service scale mytomcat=5
+
+docker ps     //if we give this command inside any machine it will give number of running container
+
+docker node inspect machinename     //This will give details of the node machine. run this command in manager machine
+
+docker node inspect self    //this give details of managet itself. run this command in manager machine
+
+docker service update --image imagename:version servicename   //with updated version new container will be created for all machine. old one will also be there.    Eg: docker service update --image tomcat:7.0 mytomcat             
+
+docker service rm servicename     //this will remove service from all machine  Eg: docker service rm mytomcat    //run command in manager
+
+docker node update --availability drain machinename   //this will shutdown the node machine  Eg: docker node update --availability drain worker1
+
+docker swarm leave         //now the machine will be left from the swarm
+
+docker-machine start machinename    //to start the machine
+
+docker-machine stop machinename     //to stop the machine   Eg: docker-machine stop worker1
+
+docker-machine rm machinename      //to remove the machine   Eg: docker-machine rm worker1
+
+
+
+
+
+
+To install virtual machine in linux
+-------------------------------------
+Give below command to install tool
+
+yum install kernel-devel kernel-headers make patch gcc
+
+
+go into /etc/yum.repos.d/ using below command
+cd /etc/yum.repos.d
+
+give below command to download repo 
+wget http://download.virtualbox.org/virtualbox/rpm/rhel/virtualbox.repo
+
+now install using below command
+yum install VirtualBox-6.0                 
+
+
+
+If we are running on VM then enable in VM -> settings -> processor -> virtual Intel VT-x/EPT or AMD-V/RVI
+
+
+refer below link for docker swam details
+https://docs.docker.com/get-started/part4/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Docker installation in windows
+-------------------------------
+If we are using windows 10 docker can be directly installated
+If we are using less than windows 10 Eg: windows 7 then we need to install docker toolbox for windows   //Here it will run docker inside the virtual box
+
+
+
+Docker insallation in centos
+----------------------------
+sudo yum update
+curl -fsSl https://get.docker.com/ | sh          - to install docker from docker repo
+sudo service docker start      - to start docker
+sudo docker run imagename       - to run the image Eg: sudo docker run ubuntu
+sudo docker run -it imagename    - to run the container  Eg: sudo docker run it ubunut
+sudo docker ps                    - to list all running containers
+
+
+
+
+
+
+To copy image from one server to different servers
+---------------------------------------------------
+
+You will need to save the Docker image as a tar file:
+
+docker save -o <path for generated tar file> <image name>                Eg: docker save -o /home/ubuntu_image.tar ubuntu
+
+Then copy your image to a new system with regular file transfer tools such as cp or scp. After that you will have to load the image into Docker:
+                                                                         Eg: scp /home/ubuntu_image.tar root@192.168.40.129:/home/files/
+			
+docker load -i <path to image tar file>                                  Eg: docker load -i /home/files/ubuntu_image.tar
+
+now check image is loaded or not using below command
+
+docker images    //it should show the image here
+
+
+
+
+PS: You may need to sudo all commands.
+
+EDIT: You should add filename (not just directory) with -o, for example:
+
+docker save -o c:/myfile.tar centos:16
+
+
+
+------------------
+
+
+Examples
+-------
+-------
+
+example dockerfile to deploy war to container
+----------------------------------------------
+Content of Dockerfile is below
+--
+FROM tomcat
+MAINTAINER robinrrr10@gmail.com
+ADD target/*.war /usr/local/tomcat/webapps/
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+
+Add Dockerfile to your project. Add in main
+
+First do mvn clean install package          //This will create war file
+
+Create docker image using below command
+docker build -t imagename path   Eg: docker build -t myimage .    
+
+Create and run container using below command
+docker run -p mainPort:DockerContainerPort imagename    //-p is for port forwarding         //Eg: docker run -p 8787:8080 myimage    ///-p is for port forwarding. 8787 is main and 8080 is docker.8787 port of main is forwared 8080 of docker container
+
+Now hit  url in browser and check
+http://hostnameorip:portnumber/projectnameorpath      Eg:   http://192.168.40.128:8787/acs/
+    
+
+------------------------------
+
+Sample Dockerfile to install tomcat in ubuntu
+--------------
+
+# To take base image
+FROM ubuntu
+
+# To install all other required packages
+RUN apt-get update && apt-get install -y curl \
+    python-software-properties \
+    software-properties-common \
+    && add-apt-repository ppa:webupd8team/java
+
+# To install java and its license
+RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
+    && echo debconf shared/accepted-oracle-license-v1-1 seen true | debconff-set-selections \
+    && apt-get update && apt-get -y install oracle-java7-installer
+
+# To install tomcat
+RUN mkdir -p /opt/tomcat \
+    && curl -SL http://apache.fastbull.org/tomcat/tomcat-7/v7.0.72/bin/apache-tomcat-7.0.72.tar.gz \
+    | tar -xzC /opt/tomcat --strip-components=1 \
+    && rm -Rf /opt/tomcat/webapps/docs /opt/tomcat/webapps/examples
+
+# To copy a tomcat-user file to tomcat in image
+COPY tomcat-user.xml /opt/tomcat/conf/
+
+# To run/open on the port
+EXPOST 8080
+
+# To set environment variable
+ENV JAVA_OPT -server -XX:+DisableExplicitGC -XX:+UseConcMarkSweepGC \
+    -Xms1G -Xmx2G -XX:PermSize=1G -XX:MaxPermSize=2G
+
+# To set current working directory
+WORKDIR /opt/tomcat
+
+# To run/start at the end
+CMD ["bin/catalina.sh", "run"]
+
+
+
+
+
+
+
+tomcat-user.conf
+
+<tomcat-users>
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<role rolename="manager-jmx"/>
+<role rolename="manager-status"/>
+<role rolename="admin-gui"/>
+<role rolename="admin-script"/>
+<user username="robin" password="robin123" roles="manager-gui,manager-script,manager-jmx,manager-status,admin-gui,admin-script"/>
+</tomcat-users>
+
+
+
+Go to directory where Dockerfile is available
+To build docker file give below command
+
+docker build -t mytom:1.0 .    
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+Docker edureka tutorial
+-----------------------
+
+docker commands
+----------------
+docker --version   //gives version
+
+docker --help      //give all command and uses
+
+docker pull imagename   //to pull image
+Eg: docker pull ubuntu
+
+
+docker run imagename   //To run a image. this will create container from image and it will be running. if the image is not present it will pull from general repo
+Eg: docker run ubuntu
+
+
+docker build -t newImageName . //To build image from docker file. 
+or  
+docker build -t /home/dockerfilespath/    
+
+docker login                    //To login to dockerhub
+
+docker tag imagenamee dockerid/imagename      //Thi will make ready push. before pushing we need to use this
+Eg: docker tag myapp robinrrr10/myapp
+
+docker push dockerhubidofuser/imagename   //To push to dockerhub
+Eg: docker push robinrrr10/myapp 
+
+
+docker ps           //To show running containers
+
+docker ps -a       //To show all containers. This will show stopped container
+
+docker images      //list all available images
+
+docker stop containerid      //This is used to shutdown the ccontainer
+
+
+docker kill containerid        //This will stop forcefully
+
+docker rm containerid       //To remove container. 
+
+docker rmi imagename        //used to remove image
+
+docker exec -it containerid bash      //To go inside container's bash
+Eg: docker exec -it hu98yi989 bash
+
+exit     //inside container will come out of bash of the container 
+
+docker commit containerid  dockerhubid/newimagename       //This will create new image from container
+
+docker commit h88y9hiuh8y robinrrr10/myappimage
+
+docker export --output="filename.tar" containerid //Used to make tar file of image using container id
+Eg: docker export --output="myappimage.tar" iuoi98yioih
+
+docker import path/of/containertarfile.tgz        //Used to import image tar
+Eg: docker import /home/robin/tarfiles/myapptar.tgz
+
+
+docker save imagename > path/to/save/tarfile/filename.tar         //Used to make tar file of the image from image
+Eg: docker save ubuntu > /home/dockertars/ubuntuimage.tar
+
+docker load < path/of/imagetarfile/filename.tar         //Used to import images from tar
+Eg: docker load < /home/dockertars/ubuntuimage.tar
+
+
+docker-compose build   //Used to build docker compose using docker yml file. This will look into current directory for docker-compose.yml
+
+docker-compose up      //Used to start/run docker compose
+
+
+
+docker container
+
+docker compose
+
+
+docker swarm           
+
+docker service
+
+
+docker container logs containerid
+Eg: docker container logs iu987iuiuy99s    //To view logs of container
+
+docker container kill
+
+docker container rm containerid          //To remove container
+Eg: docker container rm hi98yyhiuh 
+
+docker container run containerid       //To run the container
+
+docker container start containerid       //To start container running
+
+docker container stop containerid          //this will stop container
+
+
+
+docker swarm init --advertise-addr ipaddress   //This command will made my current host to manager
+Eg: docker swarm init --advertise-addr 192.168.40.192    //Give ip address of the current machine. then now current machine will become manager
+//copy that whole join command to use the command in node machine to join as worker
+
+
+
+docker swarm join  ...   //Give this in worker node machine. give copied command from above
+
+docker swarm join-token   //To  regenerate token. give this is manager machine
+
+docker swarm leave     //used to leave the docker swarm. use this in worker node machine
+
+docker swarm leave --force   //used to leave the docker swarm. use this in manager machine
+
+
+
+
+
+docker service ls    //used to list all nodes in cluster
+
+docker service ps       //used to show what are the containes in particular node
+
+docker service scale    // used to increase/decrease the number of same container. so it will create new container based on no of scale and run in nodes
+
+docker service stop            //used to stop any container in node
+
+docker service logs     //used to give logs
+
+docker service rm         //used to remove the service
+
+
+
+
+
+
+
+
+
+Eg: 
+docker run --rm -p 4200:4200 --name "mycontainer" myimage
+
+
+
+
+docker swarm is used to manage multiple docker engine/hosts
+docker swarm works with manager and nodes.
+What ever executed in manager, it will be automatically excuted in node
+docker swarm is used for scalling up and high availability
+
+
+
+docker service is used to control any existing docker service in container or docker-compose or docker swarm
+
+docker service is mostly used in docker swarm and docker compose
+
+docke service will be used in docker swarm
+
+
+docker-compose.yml  example
+------------------
+
+
+version: '3.0' #specify docker-compose version
+
+#Define the services/containers to be run
+services:
+  angular: #name of the first service
+     build: angular-app #specify the directory of the Dockerfile
+     ports:
+       - "4200:4200" # specify port mapping
+
+  express: #name of the second service
+     build: express-service  #specify the directory of the Dockerfile
+     ports:
+       - "3000:3000"  #specify ports mapping
+     links:
+       - database   # link this service to the database service
+
+  database: # name of the third service
+     image: mongo   # specify image to build container from 
+     ports:
+       - "27017:27017"   # specify port forwarding
+
+
+
+
+
+
+
+
+
+Docker, Git and jenkins
+-----------------------
+
+
+Dockerfile
+----
+
+FROM node:6
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY package.json /usr/src/app
+RUN npm cache clean
+RUN npm install
+COPY . /usr/src/app
+EXPOSE 4200
+CMD ["npm", "start"]
+
+
+
+In jenkins
+
+give git  url and branch
+
+
+
+in build select Execute shell and give below command
+
+docker build -t demoapp1 /home/robin/mydockerfiles/
+
+docker run --rm -p 4200:4200 --name "myappcontainer" demoapp1
+
+
+
+
+Docker compose
+--------------
+
+
+docker-compose.yml   for MEAN stack application (MongoDb, Express, Angularjs and NodeJS)
+-----------------
+
+version: '3.0'   # specify docker-compose version
+
+#Define the service/containers to be run
+services:
+  angular: #name of the first server
+    build: angular-app  #specify the directory of the Dockerfile
+    ports:
+	- "4200:4200"  # specify port mapping
+
+  express: #name of the second service
+    build: express-server  #specify the directory of the Dockerfile
+    ports:
+	- "3000:3000"    # specify ports mapping
+    links:
+	- database    # link this service to the database service
+
+  database:    # name of the third service
+    image: mongo    #specify image to build container from
+    ports:
+	- "27017:27017"   #specify port forwarding
+
+
+
+
+
+used Dockerfile   for above docker-compose
+
+FROM node:6
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY package.json /usr/src/app
+RUN npm cache clean
+COPY . /usr/src/app
+EXPOSE 4200
+CMD ["npm","start"]
+
+
+
+second Dockerfile for above docker-compsoe
+
+FROM node:6
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY package.json /usr/src/app
+RUN npm cache clean
+RUN npm install
+COPY . /usr/src/app
+EXPOSE 3000
+CMD ["npm","start"]
+
+
+
+
+
+To start docker-compose file, go to directory where docker-compose.yml file is available
+Give below command
+
+docker-compose up       //This will start docker-compose to run
+
+        
+
+
+
+
+Docker swarm      (for high availability)
+--------------
+--------------
+
+In manager  (below command is for manager)
+----------
+
+
+docker swarm init --advertise-addr ipaddress      //This will make current machine into manager
+
+ 
+docker service ls    //shows list of services
+
+docker service ps servicename          //to check list tasks of services
+
+docker service create servicename imagename        //to create new service
+
+docker service rm servicename              //remove service
+
+docker service scale servicename=5                  //scale service. give number to scale for number of replicas
+
+
+
+
+
+
+docker node ls            //list the nodes    //This command is for manager
+
+docker node ps          //list services in nodes  //This command is for node and manager
+
+docker node rm id              //remove node
+
+
+
+
+
+
+docker swarm leave    //To leave swarm    //This is for node
+
+docker swarm leave --force         //To leave swarm       //This is for manager  //This will leave the cluster itself
+
+
+
+
+For swarm we can use more number of Virtual machine also
+
+
+
+We can use one virtual machine for worker
+we can use another virtual machine for worker
+We can use another one virtual machine for manager
+
+For all three docker engine should be installed 
+
+
+even the application is running on any one of the node itself it can be reflected even in other nodes also. we can check this by hitting http://localhost:portnumber
+
+
+
+
+
+In manager
+----------
+
+To make as maanger give below command
+docker swarm init --advertise-addr 192.168.40.132         //Give the ip address of machine
+
+
+//open the port what is showing in above command
+
+after joining node to this manager give below command and check
+docker node ls
+
+To create service
+docker service create --name "Ang-App" -p 4200:4200 demoapp1
+
+check whether service is running or not
+docker service ls
+	
+Check whether container is created or not in manager machine using below command
+docker ps
+
+To check where the service is running give below command
+docker service ps Ang-App
+
+Check the application is running or not by hitting the url in browser
+http://192.168.40.121:4200     or http://192.168.40.121:4200
+
+
+check what are the nodes available using below command
+docker node ls
+
+To check what are the service running and to check number of replicas give below command
+docker service ls
+
+To check where the service is running give below commaand
+docker service ps Ang-App           //Here Ang-App is the service name
+
+To remove service give below command
+docker service rm Ang-App
+
+To create service in all nodes give below command
+docker service create --name "Ang-App" -p 4200:4200 --mode global demoapp1
+
+To check whar are the container running 
+docker ps
+
+To check what are the service running and what is the mode and how many replicas give below command
+docker service ls
+
+To check what are nodes the service is running
+docker service ps Ang-App
+
+down any node and check status of node using below command
+docker node ls 
+
+now up any node and again check status of node using below command
+docker node ls
+
+To remove service give below command
+docker service rm Ang-App
+
+To create service with number of replicas give below command
+docker service create --name "Ang-App" -p 4200:4200 --replicas 2 demoapp1
+
+to check number of replicas running on nodes give below command
+docker node ps
+
+To check detail give below command
+docker service ps Ang-App
+
+To check replicas give below command
+docker service ls
+
+To increase/scale number of replicas give below command
+docker service scale Ang-App=5                             //This will run 5 replicas
+
+Again check number of replicas using below command
+docker service ls
+
+To check how many replicas/container is up in nodes
+docker service ps Ang-App
+
+Again check number of replicas
+docker service ls
+
+If we no need to run on manager. but it should run on other nodes give below command
+docker node update --availability drain Manager-1     //Manager-1 is the node name. but that replicas will be started in any of the worker node
+
+Again give below command and check
+docker service ps Ang-App
+
+Check all node availability using below command
+docker node ls
+
+To start active again from drain below command
+docker node update --availability active Manager-1       //now it will active. but replicas wont be started in manager unless any replicas goes down. if any replicas goes down in worker node, then again manager replicas will be started
+
+To check availability again check
+docker node ls
+
+
+
+
+
+In worker node
+-------
+
+Give below command to join to swarm. 
+
+docker swarm join \
+--token SWMTKN-1-8687gyuguog8y8yilho8y78yiuhbh78oy8o7y-98yi9yiu \
+192.168.40.132:2377
+
+[[
+Afte creating service with replicas give below command to check container is created or not.
+docker ps
+
+Even the application is running on different internally here also it will show like that it was running. just hit api and check
+http://localhost:4200
+
+To check whether the container is running or not
+docker ps
+
+to stop replicas/container in give below command
+docker node update --availability drain worker-2    //worker-2 is node name
+
+
+
+
+
+
+example shell command in jenkins to run docker and test there
+
+sudo docker build -t robin/myimage:1.0 '/var/ubuntu/jenkins/workspace/workspace/git-build'       //Used to build image from docker file
+
+sudo docker run  -it -d -p 80:80 robin/myimage:1.0                                 //used to run container
+
+cp '/var/ubuntu/jenkins/workspace/workspace/git-build/myseleniumtest.jar' '/home/ubuntu/myseleniumtest.jar'     //used to copy the test jar
+
+sudo su -c "java -jar myseleniumtest.jar" -s /bin/sh ubuntu                        //used to run the test using jar with user ubuntu
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Docker helpful sites
+--------------------
+
+HELPFUL TIPS
+You can visit - https://get.docker.com/
+for more installation related help
+
+To install docker from binaries
+https://docs.docker.com/engine/instal...
+
+Installation steps for amazon ec2
+http://docs.aws.amazon.com/AmazonECS/...
+
+
+References:
+
+Linux free instance - https://aws.amazon.com/free/
+
+Docker Manuals - https://docs.docker.com/manuals/
+
+https://get.docker.com/
+
+

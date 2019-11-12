@@ -1,0 +1,40 @@
+Devops
+-------
+VMware 
+Vagrant 
+Docker
+Kubernates
+AWS
+microsoft Azure
+google cloud platform
+Digital ocean
+GIT
+Bitbucket
+Maven
+Jenkins
+travis
+Ansible
+puppet
+Chef
+SonarQube(for code analysis)
+Sonatype nexius (for artifacts)
+Jfrog(for artifacts)
+Nagios
+local Jira setup
+Gitlabs
+Java
+Linux
+Python
+Tomcat
+Wildfly
+Jboss
+Apache httpd
+HaProxy(load balancing and reverse proxy)
+Nginx(load balancing and reverse proxy)
+DNS bind
+
+
+
+
+All above should be automated
+

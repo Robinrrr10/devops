@@ -1,0 +1,328 @@
+DNS
+---
+
+DNS server hostname      dnsserver.dns.com
+Client server hostname   dnsclient.dns.com
+//like above two for both hostname middle and end should be same Eg: XXX.dns.com
+
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+
+Below is installation and full configuration of dns server and its client
+
+
+
+192.168.40.120 dns.dnsserver.com              //DNS server ip and hostname
+192.168.40.119 dnsc1.dnsserver.com            //client 1 ip and hostname
+192.168.40.118 dnsc2.dnsserver.com            //client 2 ip and hostname
+
+
+prerequest before install dns(bind)   //Give hostname/domain name for dns server
+----------------------------------- 
+
+Step 1:  Give hostname
+hostname dns.dnsserver.com
+
+Step 2: Open /etc/hostname and give hostname here also. save and close
+vi /etc/hostname
+dns.dnsserver.com
+
+Step 3: Open /etc/hosts  and map ip address to hostname like below. save and close
+vi /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.40.120 dns.dnsserver.com
+
+
+To install dns
+-------------
+
+
+Step 5: Install bind using below command
+yum -y install bind*
+
+
+
+To config   // Eg: 192.168.40.120 is dns server ip dns.dnsserver.com is the hostname of dns server. dnsserver.com is the common base domain for dns server and its client
+----------
+
+Step 6: open /etc/named.conf and configure like below
+vi /etc/named.conf
+
+listen-on port 53 { 127.0.0.1; 192.168.40.120; };                //Give dns server ip address here   //if we give this then only dns will listen on this ip address
+
+
+allow-query     { any; };              //Give any here    //Then only this will work from remote client also
+
+
+Step 7: Add below in the same file /etc/named.conf
+
+zone "dnsserver.com" IN {                                //Give common domain name dnsserver.com here. This is common for dns server and its client
+        type master;
+        file "forward.dnsserver";                       //forward.dnsserver is the file name it will look for forward (host name to ip)
+        allow-update { none; };
+};
+zone "40.168.192.in-addr.arpa" IN {                     //Give first three numbers in ip address in reverse like this Eg: 40.168.192.in-addr.arpa
+        type master;
+        file "reverse.dnsserver";                       //reverse.dnsserver  is the file name it will look for reverse (ip to host name)
+        allow-update { none; };
+};
+
+
+Step 8: Save and close
+
+
+Add forward and reverse dns file             //dot(.) at the end of all hostname is mandatory, then only it will work
+--------------------------------
+
+Step 9: Go to /var/named directory
+cd /var/directory
+
+Step 10: Add forward.dnsserver file
+
+vi forward.dnsserver
+
+$TTL 86400
+@       IN SOA  dns.dnsserver.com. root.dnsserver.com. (
+        2011071001  ;Serial
+        3600        ;Refresh
+        1800        ;Retry
+        604800      ;Expire
+        86400       ;Minimum TTL
+)
+@       IN  NS          dns.dnsserver.com.
+@       IN  A           192.168.40.120
+@       IN  A           192.168.40.119
+@       IN  A           192.168.40.118
+dns     IN  A   192.168.40.120
+dnsc1   IN  A   192.168.40.119
+dnsc2   IN  A   192.168.40.118
+
+
+Step 11: Add reverse.dnsserver file
+
+$TTL 86400
+@       IN SOA  dns.dnsserver.com. root.dnsserver.com. (
+        2011071001  ;Serial
+        3600        ;Refresh
+        1800        ;Retry
+        604800      ;Expire
+        86400       ;Minimum TTL
+)
+@       IN  NS          dns.dnsserver.com.
+@       IN  PTR         dnsserver.com.
+dns     IN  A   192.168.40.120
+dnsc1   IN  A   192.168.40.119
+dnsc2   IN  A   192.168.40.118
+101     IN  PTR         dns.dnsserver.com.
+102     IN  PTR         dnsc1.dnsclient1.com.
+103     IN  PTR         dnsc2.dnsclient2.com.
+
+
+
+
+Add dns server ip address in server and network interface   [important: Do step 11,12,13,14 in dns server and all clients]
+------------------------------------------------------
+
+Step 11: Add DNS ip address in network interface  /etc/sysconfig/network-scripts/ifcfg-ens33
+vi  /etc/sysconfig/network-scripts/ifcfg-ens33
+
+DNS=192.168.40.120
+
+Step 12: Save,close and restart network
+systemctl restart network
+
+
+Step 13: Add dns ip address in /etc/resolv.conf
+vi /etc/resolv.conf
+
+nameserver 192.168.40.120
+
+
+Step 14: Save and close
+
+
+
+Open port and start named server
+-------------------------------
+
+Step 15: open port 53 tcp, udp and restart firewall
+firewall-cmd --permanent --add-port=53/tcp
+firewall-cmd --permanent --add-port=53/udp
+firewall-cmd --reload
+
+Step 16: start named server
+systemctl start named
+
+
+Finished
+
+Now check in dns server
+-------------------------
+
+dig dns.dnsserver.com             
+
+nslookup dnsserver.com
+
+dig dnsc1.dnsserver.com
+
+dig dnsc2.dnsserver.com
+
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+
+
+Example:
+-------
+
+cat /etc/named.conf
+-------------------
+
+
+//
+// named.conf
+//
+// Provided by Red Hat bind package to configure the ISC BIND named(8) DNS
+// server as a caching only nameserver (as a localhost DNS resolver only).
+//
+// See /usr/share/doc/bind*/sample/ for example named configuration files.
+//
+// See the BIND Administrator's Reference Manual (ARM) for details about the
+// configuration located in /usr/share/doc/bind-{version}/Bv9ARM.html
+
+options {
+        listen-on port 53 { 127.0.0.1; 192.168.40.120; };
+        listen-on-v6 port 53 { ::1; };
+        directory       "/var/named";
+        dump-file       "/var/named/data/cache_dump.db";
+        statistics-file "/var/named/data/named_stats.txt";
+        memstatistics-file "/var/named/data/named_mem_stats.txt";
+        recursing-file  "/var/named/data/named.recursing";
+        secroots-file   "/var/named/data/named.secroots";
+        allow-query     { any; };
+        #allow-query     { localhost; 192.168.40.120; };
+
+        /*
+         - If you are building an AUTHORITATIVE DNS server, do NOT enable recursion.
+         - If you are building a RECURSIVE (caching) DNS server, you need to enable
+           recursion.
+         - If your recursive DNS server has a public IP address, you MUST enable access
+           control to limit queries to your legitimate users. Failing to do so will
+           cause your server to become part of large scale DNS amplification
+           attacks. Implementing BCP38 within your network would greatly
+           reduce such attack surface
+        */
+        recursion yes;
+
+        dnssec-enable yes;
+        dnssec-validation yes;
+
+        /* Path to ISC DLV key */
+        bindkeys-file "/etc/named.iscdlv.key";
+
+        managed-keys-directory "/var/named/dynamic";
+
+	pid-file "/run/named/named.pid";
+        session-keyfile "/run/named/session.key";
+};
+
+logging {
+        channel default_debug {
+                file "data/named.run";
+                severity dynamic;
+        };
+};
+
+zone "." IN {
+        type hint;
+        file "named.ca";
+};
+
+zone "dnsserver.com" IN {
+        type master;
+        file "forward.dnsserver";
+        allow-update { none; };
+};
+zone "40.168.192.in-addr.arpa" IN {
+        type master;
+        file "reverse.dnsserver";
+        allow-update { none; };
+};
+
+include "/etc/named.rfc1912.zones";
+include "/etc/named.root.key";
+
+
+
+cat /var/named/forward.dnsserver
+--------------------------------
+
+$TTL 86400
+@       IN SOA  dns.dnsserver.com. root.dnsserver.com. (
+        2011071001  ;Serial
+        3600        ;Refresh
+        1800        ;Retry
+        604800      ;Expire
+        86400       ;Minimum TTL
+)
+@       IN  NS          dns.dnsserver.com.
+@       IN  A           192.168.40.120
+@       IN  A           192.168.40.119
+@       IN  A           192.168.40.118
+dns     IN  A   192.168.40.120
+dnsc1   IN  A   192.168.40.119
+dnsc2   IN  A   192.168.40.118
+
+
+cat /var/named/reverse.dnsserver
+--------------------------------
+
+$TTL 86400
+@       IN SOA  dns.dnsserver.com. root.dnsserver.com. (
+        2011071001  ;Serial
+        3600        ;Refresh
+        1800        ;Retry
+        604800      ;Expire
+        86400       ;Minimum TTL
+)
+@       IN  NS          dns.dnsserver.com.
+@       IN  PTR         dnsserver.com.
+dns     IN  A   192.168.40.120
+dnsc1   IN  A   192.168.40.119
+dnsc2   IN  A   192.168.40.118
+101     IN  PTR         dns.dnsserver.com.
+102     IN  PTR         dnsc1.dnsclient1.com.
+103     IN  PTR         dnsc2.dnsclient2.com.
+
+
+
+
+
+
+
+refer below link
+----------------
+
+https://www.unixmen.com/setting-dns-server-centos-7/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

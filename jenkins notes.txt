@@ -1,0 +1,253 @@
+jenkins installation
+--------------------
+--------------------
+
+In windows
+----------
+Download jenkins war file from https://jenkins-ci.org
+
+then start using below command
+
+java -jar jenkins.war
+
+
+
+--------
+
+
+Blue - means job is success
+red  - means job is failure
+grey - means job is aborted
+
+
+
+----------
+
+First need to configure JDK and Build tools
+----------
+
+Manage jenkins -> Configure system
+
+//We can give jdk and maven   //we can also select install automatically. here we can give version also
+
+
+
+For security
+----
+manage jenkins -> configure global security
+
+check enable security
+
+in security Realm
+we can give jenkins own user database
+then also check allow user to signup
+
+in Authorization,
+select logged in user can do anything
+
+
+
+-------------------------
+
+
+Before running any thing in bash or any job ask for password, We have to set ssh key
+
+
+----------------------
+
+
+
+For Git in jenkins
+------
+First need to add GIT plugin
+
+
+
+---------------------------
+
+
+Jenkins will be installed in default path /var/lib/jenkins
+
+jobs   - this directory contains all job configuration
+
+nodes    - this directory contains all node slave machine configuration
+
+plugins  - this directory contains all plugins  //All plugins will be in jpi extension. //We can also manually copy the plugins from the internet ans paste here
+
+.ssh   - This directory contains all keys like ssh etc
+
+
+workspace  - contains content of the job which is already runned/running
+
+userContent - used to share files using http
+      Eg: http://localhost:8080/userContent
+
+
+
+
+
+------------------------------
+
+in new items, external jobs is for running/configure jobs in other machine jenkins
+
+
+to run job in different environment or different version, then select multi configuration projects in new items
+
+
+
+----
+
+in job configuration
+
+discart old build   - to configure how many jobs to keep// So this will delete older 
+
+
+
+This build is parameterized   - to add/pass parameter to the project
+
+Excecute concurrent build if necessary   - To run the job parallelly
+
+
+
+poll SCM  - To start trigger the job once some one commit the code in repo
+
+
+* * * * *   - To check in every minute
+
+
+
+in goals  // no need to add mvn command. just add other commands
+
+
+
+----------------------
+
+Before installation
+-------------------
+Need to insatll java     //Have to install JDK. Do not install JRE. Only JDK will works
+
+Then only jenkins will work
+
+Need to install Git
+Need to install maven
+
+
+Have to set JAVA_HOME
+Have to set MAVEN_HOME
+Have to set JAVA_HOME/bin
+HAVE to set MAVEN_HOME/bin
+
+What plugins we use, that should be available in system. 
+if we use ansible, then we have install ansible first
+
+---------------------------
+
+
+
+To give permission for jenkins
+------------------------------
+
+chown -R jenkins:jenkins fileNameOrFolderName
+
+
+
+Setting jenkins slave
+---------
+
+Go to new slave machine
+---
+    //before start install java jdk, maven, git in slave machine
+Here im giving user name and password as jenkins  and saving path is /var/lib/jenkins
+
+sudo su
+
+useradd -d /var/lib/jenkins -m -s /bin/bash jenkins   //Here all jenkins files should save in /var/lib/jenkins
+
+passwd jenkins   //Setting the password
+
+Go to jenkins ui
+----
+manage jenkins -> manage nodes
+
+click new nodes
+
+give name
+
+then save
+
+in Remote root give slave saving path  /var/lib/jenkins
+
+Just give any name Eg: slaveUbunut   //it is just like group
+
+in host give slave ip address
+
+In credential give like username and password  Eg: jenkins   //We can also use ssh key
+
+Then save
+
+Go to slave node and lauch it
+
+
+
+To run the job on slave
+----------------
+In job configuration
+Restrict where this project can run, give slave lable or name
+
+
+To debug
+---------
+Go to that jenkins server. change to jenkins user and then try as command in terminal
+
+Any modification done in terminal. we need to restart jenkins
+
+-----------------
+
+
+To set number of executor
+----
+
+manage jenkins -> configure system 
+
+# of executor    give number //So it can allow upto that number of job to execute parallelly. It good to have as same as number of processor
+
+
+
+in slave
+manage jenkins -> manage nodes
+
+go to slave node then configure
+here we can give
+
+-----
+
+
+
+To add jenkins email 
+---------------------
+
+manage jenkins -> configure system -> 
+
+Email-notification
+
+SMTP server smtp.gmail.com       //for gmail
+
+check Use SMTP authentication
+
+User Name : robinjenkins@gmail   //Give jenkins or sending email address
+Password: robin123               //Give password of email address
+check SSL
+SMTP port: 465
+Reply to address: noreply@gmail.com    //if not need to reply give this. or else we can add any email to receive reply mail
+Charset: UTF-8
+
+We can also test email configuration by checking below
+check Test cofiguration by sending test emil
+Test email recipient : robin@gmail.com             //Give recipient email to check
+
+
+
+
+-------------------------------s
+
+ 

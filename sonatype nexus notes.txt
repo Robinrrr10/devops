@@ -1,0 +1,33 @@
+Sonatype nexus
+--------------
+
+Installation of nexus
+---------------------
+1. First need to install java
+2. Download nexus tar from official websites
+3. untar the file    in /opt/
+4. rename extracted directory to nexus
+5. create new user for nexus and set password
+6. Add permission for the nexus directory to nexus and sonatype-work user  Eg: sudo chown -R nexus:nexus /opt/nexus 
+7. Add this user to sudo   visudo. Give same permission like root   //open /etc/sudoers and give like root
+8. open /opt/nexus/bin/nexus.rc and uncommand run_as_user and give the user name here
+9. all link for service
+sudo ln -s /opt/nexus/bin/nexus /etc/init.d/nexus
+10. Switch to that user
+su - user
+11. start service using below ccommnad
+service nexus start
+12. check in browser
+http://localhost:8081
+13. use below default credential
+username: admin
+password: admin123
+
+
+To create repository
+---------------
+login to the nexus portal
+Go to settings
+Go to repository
+Click create repository
+

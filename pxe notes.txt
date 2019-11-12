@@ -1,0 +1,311 @@
+PXE boot
+-------
+Preboot  Execution Environment
+
+
+http server
+tftp server
+DHCP server
+yum should be configured
+Selinux and IPtables should be disabled
+
+Boot the client with DHCP along bootp
+
+---
+
+
+cat /etc/redhat-release
+
+ip a
+
+yum install tftp-server syslinux dnsmasq
+
+mv /etc/dnsmasq.conf /etc/dnsmasq.conf-bk
+
+vi /etc/dnsmasq.conf
+
+
+# DNSMASQ - with DHCP 
+# DNS Options
+port=0
+interface=eth0,lo
+
+#DHCP range-leases
+dhcp-range=eth0,172.17.20.200,172.17.20.250,255.255.0.0,1h
+
+#Gateway
+dhcp-option=3,172.17.20.100
+#DNS
+dhcp-option=6,172.17.20.100, 8.8.8.8
+#Broadcast Address
+dhcp-option=28,172.17.255.255
+#NTP server
+dhcp-option=42,0.0.0.0
+
+#PXE
+dhcp-boot=pxelinux.0
+pxe-service=x86PC, "Linuxtopic.com", pxelinux
+
+#Enable TFTP
+enable-tftp
+tftp-root=/var/lib/tftpboot
+
+
+#DNSMASQ - without DHCP (DHCP already present in network)
+# DNSMASQ - with DHCP 
+# DNS Options
+port=0
+interface=eth0,lo
+
+#DHCP range
+dhcp-range=172.17.0.1,proxy
+dhcp-option=vendor:PXEClient,6,2b
+dhcp-no-override
+
+#PXE
+dhcp-boot=pxelinux.0
+pxe-service=x86PC, "Linuxtopic.com", pxelinux
+
+#Enable TFTP
+enable-tftp
+tftp-root=/var/lib/tftpboot
+
+
+
+
+
+
+
+
+cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
+cp /usr/share/syslinux/menu.c32 /var/lib/tftpboot/
+cp /usr/share/syslinux/mboot.c32 /var/lib/tftpboot/
+cp /usr/share/syslinux/chain.c32 /var/lib/tftpboot/
+cp /usr/share/syslinux/vesamenu.c32 /var/lib/tftpboot/
+
+ls -l /var/lib/tftpboot/
+
+mkdir /var/lib/tftpboot/pxelinux.cfg
+
+vi /var/lib/tftpboot/pxelinux.cfg/default
+
+default vesamenu.c32
+prompt 0
+timeout 50
+
+# Local hard disk prelinux.cfg default entry
+LABEL 1
+	MENU LABEL ^1) BOOT local hard drive
+	MENU AUTOBOOT
+	MENU DEFAULT
+	LOCALBOOT 0
+
+
+
+ll /tmp/
+clonezilla-live-2.5.5.zip          //iso or zip file should be available
+
+
+mkdir /var/lib/tftpboot/clonezilla
+mv /tmp/clonezilla-live-2.5.5.zip /var/lib/tftpboot/clonezilla
+cd /var/lib/tftpboot/clonezilla
+
+unzip clonezilla-live-2.5.5.zip
+
+ls
+
+vi /var/lib/tftpboot/prelinux.cfg/default
+
+
+default vesamenu.c32
+prompt 0
+timeout 50
+
+# Local hard disk prelinux.cfg default entry
+LABEL 1
+	MENU LABEL ^1) BOOT local hard drive
+	MENU AUTOBOOT
+	MENU DEFAULT
+	LOCALBOOT 0
+
+# clonezilla prelinux.cfg default entry
+LABEL 2
+	MENU LABEL ^2) Clonezilla Live
+	KERNEL clonezilla/live/vmlinuz
+	APPEND ramdisk_size=32768 initrd=clonezilla/live/initrd.img boot=live union=overlay username=user config components noswap edd=on nomodeset noeject locales=en_US.UTF-8 keyboad-layouts=NONE net.ifnames=0 ocs_live_extra_param="" ocs_live_keymap="NONE" ocs_live_batch="yes" ocs_lang="eng_US.UTF-8" vga=788 ip=frommedia nosplash fetch=tftp://172.17.20.100/clonezilla/live/filesystem.squashfs
+
+
+
+
+
+
+
+mount -o loop /tmp/CentOS-7-x86_64-Minimal-1708.iso /mnt
+
+
+ll /mnt/
+
+mkdir /var/lib/tftpboot/data
+mkdir /var/lib/tftpboot/data/centos7_64Bit
+cp -fr /mnt/* /var/lib/tftpboot/data/centos7_64Bit
+
+ll /var/lib/tftpboot/data/centos7_64Bit
+
+chmod -R 755 /var/lib/tftpboot/data
+
+yum install nfs-server
+
+yum install nfs-utils
+
+vi /etc/exports
+
+/var/lib/tftpboot/data *(rw)
+
+systemctl restart nfs-server
+
+showmount -e 172.17.20.100
+
+yum install httpd
+
+httpd -v
+
+vi /etc/httpd/conf.d/pxeboot.conf
+
+Alias /pxeboot /var/lib/tftpboot/data
+
+<Directory /var/lib/tftpboot/data>
+Options Indexes FollowsSymLinks
+Require all granted
+</Directory>
+
+
+
+
+systemctl restart httpd
+
+systemctl status firewalld
+
+systemctl stop firewalld
+
+setenforce 0
+
+systemctl disable firewalld
+
+vi /etc/sysconfig/selinux
+
+SELINUX=permissive
+
+
+
+
+in brower
+172.17.20.100/pxeboot
+
+
+
+vi /var/lib/tftpboot/prelinux.cfg/default
+
+
+default vesamenu.c32
+prompt 0
+timeout 50
+
+# Local hard disk prelinux.cfg default entry
+LABEL 1
+	MENU LABEL ^1) BOOT local hard drive
+	MENU AUTOBOOT
+	MENU DEFAULT
+	LOCALBOOT 0
+
+# clonezilla prelinux.cfg default entry
+LABEL 2
+	MENU LABEL ^2) Clonezilla Live
+	KERNEL clonezilla/live/vmlinuz
+	APPEND ramdisk_size=32768 initrd=clonezilla/live/initrd.img boot=live union=overlay username=user config components noswap edd=on nomodeset noeject locales=en_US.UTF-8 keyboad-layouts=NONE net.ifnames=0 ocs_live_extra_param="" ocs_live_keymap="NONE" ocs_live_batch="yes" ocs_lang="eng_US.UTF-8" vga=788 ip=frommedia nosplash fetch=tftp://172.17.20.100/clonezilla/live/filesystem.squashfs
+
+
+# Centos 7 prelinux.cfg default entry
+LABEL 3
+	MENU LABEL ^3) Install CentOS 7 - NFS
+	KERNEL data/centos7_64Bit/images/pxeboot/vmlinuz
+	APPEND initrd=data/centos7_64Bit/images/pxeboot/initrd.img inst.stage2=nfs:192.17.20.100:/var/lib/tftpboot/data/centos7_64Bit quiet
+
+# Centos 7 prelinux.cfg default entry
+LABEL 4
+	MENU LABEL ^4) Install CentOS 7 - HTTP
+	KERNEL data/centos7_64Bit/images/pxeboot/vmlinuz
+	APPEND initrd=data/centos7_64Bit/images/pxeboot/initrd.img method=http://172.17.20.100/pxeboot/centos7_64Bit devfs=nomount
+
+
+
+
+systemctl restart dnsmasq
+
+systemctl status dnsmasq
+
+
+
+---
+
+
+yum install vsftpd
+
+vi /etc/vsftpd/vsftpd.conf
+
+local_enable=NO
+
+
+write_enable=NO
+
+
+systemctl restart vsftpd.conf
+
+
+
+vi /var/lib/tftpboot/prelinux.cfg/default
+
+
+default vesamenu.c32
+prompt 0
+timeout 50
+
+# Local hard disk prelinux.cfg default entry
+LABEL 1
+	MENU LABEL ^1) BOOT local hard drive
+	MENU AUTOBOOT
+	MENU DEFAULT
+	LOCALBOOT 0
+
+# clonezilla prelinux.cfg default entry
+LABEL 2
+	MENU LABEL ^2) Clonezilla Live
+	KERNEL clonezilla/live/vmlinuz
+	APPEND ramdisk_size=32768 initrd=clonezilla/live/initrd.img boot=live union=overlay username=user config components noswap edd=on nomodeset noeject locales=en_US.UTF-8 keyboad-layouts=NONE net.ifnames=0 ocs_live_extra_param="" ocs_live_keymap="NONE" ocs_live_batch="yes" ocs_lang="eng_US.UTF-8" vga=788 ip=frommedia nosplash fetch=tftp://172.17.20.100/clonezilla/live/filesystem.squashfs
+
+
+# Centos 7 prelinux.cfg default entry
+LABEL 3
+	MENU LABEL ^3) Install CentOS 7 - NFS
+	KERNEL data/centos7_64Bit/images/pxeboot/vmlinuz
+	APPEND initrd=data/centos7_64Bit/images/pxeboot/initrd.img inst.stage2=nfs:192.17.20.100:/var/lib/tftpboot/data/centos7_64Bit quiet
+
+# Centos 7 prelinux.cfg default entry
+LABEL 4
+	MENU LABEL ^4) Install CentOS 7 - HTTP
+	KERNEL data/centos7_64Bit/images/pxeboot/vmlinuz
+	APPEND initrd=data/centos7_64Bit/images/pxeboot/initrd.img method=http://172.17.20.100/pxeboot/centos7_64Bit devfs=nomount
+
+
+# Centos 7 prelinux.cfg default entry
+LABEL 5
+	MENU LABEL ^5) Install CentOS 7 - FTP
+	KERNEL data/centos7_64Bit/images/pxeboot/vmlinux
+	APPEND initrd=data/centos7_64Bit/images/pxeboot/initrd.img inst.repo=ftp://172.17.20.100:/centos7_64Bit
+
+
+
+
+systemctl restart dnsmasq
+
+
+

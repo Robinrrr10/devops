@@ -1,0 +1,162 @@
+Below
+------
+one zookeeper server    192.168.40.114
+
+three kafka broker      192.168.40.111, 192.168.40.112, 192.168.40.113
+
+
+
+kafka installation
+------------------
+
+yum install java-1.8.0-openjdk
+
+yum install wget
+
+wget http://mirrors.fibergrid.in/apache/kafka/2.0.0/kafka_2.12-2.0.0.tgz                   or http://mirrors.estointernet.in/apache/kafka/2.3.0/kafka_2.12-2.3.0.tgz
+
+tag -xvf kafka_2.12-2.0.0.tgz
+
+ll kafka_2.12-2.0.0
+
+ll kafka_2.12-2.0.0/bin     //This contains kafka-topics.sh, zookeeper-shell.sh and others
+
+ll kafka_2.12-2.0.0/config   // This contains server.properties, zookeeper.properties
+
+cd ~
+
+vi .bash_profile
+
+PATH=$PATH:$HOME/.local/bin:$HOME/bin:$HOME/kafka_2.12-2.0.0/bin   //Add kafka environment path
+
+source .bash_profile
+
+
+
+Configuration of zookeeper   //in 1 vm   192.168.40.114
+--------------------------
+
+vi kafka_2.12-2.0.0/config/zookeeper.properties
+
+dataDir=/home/myzookeeper/zookeeper_data   //we can use default also
+
+save and close
+
+mkdir /home/myzookeeper/zookeeper_data
+
+zookeeper-server-start.sh kafka_2.12-2.0.0/config/zookeeper.properties   //to start zookeeper
+
+vi /etc/rc.d/rc.local
+
+/home/kafka_2.12-2.0.0/bin/zookeeper-server-start.sh /home/kafka_2.12-2.0.0/config/zookeeper.properties > /dev/null 2>&1 &    //This is to start whenever reboot or start of server
+
+save and close
+
+
+sudo chmod +x /etc/rc.d/rc.local
+
+sudo systemctl enable rc-local
+
+sudo systemctl start rc-local
+
+
+
+firewall-cmd --permanent --add-port=2181/tcp
+firewall-cmd --reload
+
+
+
+
+                            // after config the broker we give     zookeeper-shell.sh 10.160.0.5:2181 ls /brokers/ids
+
+
+
+
+
+configuration of kafka broker   //in 3 vm    192.168.40.111, 192.168.40.112, 192.168.40.113
+-----------------------------
+
+
+vi kafka_2.12-2.0.0/config/server.properties
+
+broker.id=0
+broker.rack=RACK1
+
+log.dirs=/home/kafka_brocker/kafka_data
+
+offsets.topic.num.partitions=3
+offsets.topic.replication.factor=2
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+min.insync.replicas=2
+default.replication.factor=2
+
+zookeeper.connect=192.168.40.114:2181            //Give zookeeper machine ip address with port
+
+save and close
+
+
+kafka-server-start.sh kafka_2.12-2.0.0/config/server.properties
+
+
+
+
+sudo vi /etc/ rc.d/rc.local
+
+/home/kafka_2.12-2.0.0/bin/kafka-server-start.sh /home/kafka_2.12-2.0.0/config/server.properties > /dev/null 2>&1 &
+
+save and close
+
+sudo chmod +x /etc/rc.d/rc.local
+
+sudo systemctl enable rc-local
+
+sudo systemctl start rc-local
+
+
+
+firewall-cmd --permanet --add-port=9092/tcp
+firewall-cmd --reload
+
+
+
+
+Test kafka
+-----------
+
+
+Go to any one of the vm
+
+zookeeper-shell.sh 192.168.40.114:2181 ls /brokers/ids
+// It should show all broker id
+
+
+kafka-topic.sh --create --zookeeper 192.168.40.114:2181 --replication-factor 3 --partitions 3 --topic test   //Here test is the topic name   //give zookeeper server
+
+kafka-topic.sh --list --zookeeper 192.168.40.114:2181          //give zookeeper server ip
+
+kafka-console-producer.sh --broker-list 192.168.40.111:9092 --topic test      //give any kafka broker ip
+
+type any message
+
+then press ctrl+c
+
+kafka-console-consumer.sh --bootstrap-server 192.168.40.113:9092 --topic test --from-beginning      //give any kafka broker ip
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+

@@ -1,0 +1,86 @@
+bind
+
+httpd
+
+----
+
+
+
+yum install bind* httpd -y
+
+
+setenforce 0
+
+service firewalld stop
+
+service httpd start
+
+check the connection in browser
+
+
+vi /var/www/html/index.html
+
+
+give some contend
+
+
+again check the browser
+
+
+vi /etc/httpd/conf/httpd.conf
+
+
+check document root
+DocumentRoot "/var/www/html"
+
+DirectoryIndex index.html
+
+vi /etc/named.conf
+
+in options
+listen-on port 53 { giveipaddress; }
+allow-query { any; }
+
+vi /etc/named.rfc1912.zones
+
+in zone
+zone "hostname.com"
+allow-update { any; }
+
+
+in zone 
+zone "firstThreenumberofIpInReverse.in-addr.arpa"
+allow-update { any; }
+
+
+cd /var/named
+vi named.localhost
+IN SOA www.hostname.com. root.hostname.com.{
+
+@	IN	NS	www.hostname.com
+www	IN	A	ipaddress
+
+
+cp named.localhost named.loopback
+
+vi named.loopback
+IN SOA www.hostname.com. root.hostname.com.{
+
+@	IN	NS	www.hostname.com.
+10	IN	A	www.hostname.com.
+
+
+service named restart
+
+Go to network setting and add that ip address as DNS server ip
+
+ping www.hostname.com
+
+
+
+
+
+
+
+
+

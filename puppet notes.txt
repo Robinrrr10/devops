@@ -1,0 +1,424 @@
+Puppet notes
+------------
+Puppet master
+
+puppet agent
+
+
+
+
+resource_type
+{ 'resource_name'
+ attribute => value
+....
+}
+
+
+
+user
+{ 'mitchell':
+ ensure => present
+ uid    => '1000'
+ gid    => '1000'
+ shell  => '/bin/bash'
+ home   => '/home/mitchell'
+}
+
+
+
+puppet resouce-type
+
+
+
+/etc/puppet/manifests/site.pp
+
+
+
+class example_class {
+....
+code
+....
+}
+
+
+
+include example_class
+
+class { 'example_class': }
+
+
+
+/etc/puppet/modules
+
+
+------------------
+
+
+
+
+
+------------------
+
+
+Puppet master
+---
+
+
+Puppet agent
+---
+
+
+
+To install
+--
+
+apt-get purge puppet puppet-common -y
+
+
+
+apt-get autoremove -y
+
+
+
+
+
+
+
+/etc/puppet
+
+/var/lib/puppet
+
+
+yum update
+
+On client
+----------
+yum install puppet
+
+
+on master/puppet server
+-----------------------
+yum install puppet-server
+
+or
+
+yum install puppetmaster
+
+
+
+sudo rpm -ivh https://yum.puppetlabs.com/e1/7/products/x86_64/puppetlabs-release-7-11.noarch/rpm
+
+
+
+or
+
+rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
+
+
+
+
+
+ls /etc/puppet
+
+ls /var/lib/puppet
+
+ls /var/lib/puppet/ssl
+
+
+
+service puppetmaster stop
+
+mv /var/lib/puppet/ssl /var/lib/puppet/ssl_backup
+
+vi /etc/puppet/puppet.com
+
+command templatedir and add below
+cert=puppet
+dns_alt_names=puppet,puppetmaster,puppetmaster.robin.com
+
+save and close
+
+service puppetmaster start
+
+ls -la /var/lib/puppet/ssl
+
+puppet cert list --all    // all 
+
+
+
+after uninstall remove below
+
+rm -rf /etc/puppet 
+rm -rf /var/run/puppet
+rm -rf /var/lib/puppet
+
+
+alternative installation of puppet master
+----------------------
+
+yum install puppetmaster
+
+puppet cert list --all
+
+
+
+To clean certificate
+puppet cert clean puppet.robin.com
+
+
+service puppetmaster stop
+
+rm -rf /var/lib/puppet/ssl
+
+vi /etc/puppet/puppet.conf
+comment templatedir
+
+add below
+cert=puppet
+alt_dns_names=puppet,puppetmaster.puppetmaster.robin.com
+
+service puppetmaster start
+
+puppet cert list --all
+
+ls -la /var/lib/puppet/ssl
+
+
+cd /etc/puppet
+
+
+ls
+
+vi auth.cong
+
+vi fileserver.conf
+[extra_files]
+ path /etc/puppet/files   //To  add extra files
+ allow *
+
+save and close
+
+Eg: 
+puppet:///extra_files/x.jar  //Eg
+
+
+puppet help
+
+
+
+
+
+puppet cert list    //This will show all pending certificate
+
+puppet cert list --all   //This will show all certificate. + means signed, or else not signed
+
+puppet cert sign puppetclient.robin.com   //To sign client in master 
+
+
+----------------
+
+
+
+puppet client
+-----------
+
+
+puppet help 
+
+apt-get purge puppet puppet-common
+
+apt-get autoremove -y
+
+
+yum install puppet
+
+
+vi /etc/default/puppet
+
+START=yes
+
+save and close
+
+
+ls -la /etc/puppet
+
+vi /etc/puppet/puppet.conf
+
+command templatedir
+
+change master to agent
+
+[agent]
+
+server=puppetmaster.robin.com   //Give master's hostname //we can add mulitple master also
+
+ping puppetmaster.robin.com    //Check 
+
+puppet agent -t  //try to communicate with master
+
+
+
+puppet agent -t
+
+
+------------------
+
+
+rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
+
+
+for master
+----------
+yum install puppetserver
+
+
+for client
+----------
+yum install puppet 
+
+
+====================================================================
+
+
+
+Puppet in cent Os                 //THIS IS THE WORKING ONE
+------------------
+------------------
+
+
+In puppet master machine    Example hostname is: pupmaster.puppetmaster.com
+------------------------
+Step 1:
+rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
+
+Step 2:
+yum install puppetserver
+
+Step 3:
+vi /etc/sysconfig/puppetserver     //Change like below
+JAVA_ARGS="-Xms1g -Xmx1g ......"     //only Change below 2 to 1 . other are same
+
+step 4:
+vi /etc/puppetlabs/puppet/puppet.conf
+
+Step 5: 
+                          //Add below and save it
+[master]
+ dns_alt_names=pupmaster.puppetmaster.com 
+[main]
+ certname = pupmaster.puppetmaster.com
+ server = pupmaster.puppetmaster.com
+ environment = production
+ runinterval = 1h
+
+
+Step 6:
+systemctl start puppetserver
+systemctl enable puppetserver
+
+Step 7:
+firewall-cmd --permanent --add-port=8140/tcp
+firewall-cmd --reload
+
+
+
+
+In puppet agent/client machine           Example hostname is: pupclient.puppetclient.com
+----------------------
+
+Step 1:
+rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
+
+Step 2:
+yum install puppet-agent
+
+Step 3:
+vi /etc/puppetlabs/puppet/puppet.conf
+
+Step 4:
+                       //Add below and save it
+[main]                     
+ certname = pupclient.puppetclient.com
+ server = pupmaster.puppetmaster.com                     //SHOULD GIVE PUPPET MASTER HOSTNAME here
+ environment = production
+ runinterval = 1h
+
+
+Step 5:
+/opt/puppetlabs/bin/puppet resource service puppet ensure=running enable=true
+
+
+
+How to make connection
+----------------------
+
+Step 1: in master:
+/opt/puppetlabs/bin/puppet cert list                  //This will show nothing
+
+Step 2: in master:
+/opt/puppetlabs/bin/puppet cert list --all             //This should show hostname with certificate of master itself
+
+Step 3: in agent:
+/opt/puppetlabs/bin/puppet agent -t
+
+Step 4: in master:
+/opt/puppetlabs/bin/puppet cert list                  //This should show agent hostname with ceritfication
+
+Step 5: in master:
+/opt/puppetlabs/bin/puppet cert sign pupclient.puppetclient.com        //Give agent hostname for sign
+
+Step 6: in master:
+/opt/puppetlabs/bin/puppet cert list                  //It should not show anything
+
+Step 7: in master:
+/opt/puppetlabs/bin/puppet cert list --all             //This should show agent hostname of agent certificate also
+
+Step 8: in agent:
+/opt/puppetlabs/bin/puppet agent -t                    //It should work
+
+
+
+Test with example   Eg: to install httpd and then to start
+--------------------
+
+Step 1: in master: 
+cd /etc/puppetlabs/code/environments/production/manifests
+
+Step 2: in master:                               
+vi site.pp                          //Create new file and add below and save it
+
+node 'pupclient.puppetclient.com' {
+     package { 'httpd':
+         ensure  => "installed",
+     }
+     service { 'httpd':
+         ensure => running,
+     enable => true
+     }
+ }
+
+
+Step 3: in client:
+/opt/puppetlabs/bin/puppet agent -t                    //It should install httpd and then it should start httpd
+
+Step 4: in client:
+systemctl status httpd                         //Verify whether it is installed or not
+
+
+======================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

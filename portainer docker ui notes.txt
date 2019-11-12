@@ -1,0 +1,33 @@
+Portainer installation
+----------------------
+
+mkdir -p ~/certs
+
+req -newkey rsa:4096 -nodes -sha256 -keyout certs/portainer.key -x509 -days 365 -out certs/portainer.crt
+
+ls certs/
+
+mkdir -p /opt/data
+
+docker run -d -p 443:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /opt/data:/data -v /root/certs:/certs protainer/portainer --ssl --sslcert /certs/portainer.crt --sslkey /certs/portainer.key
+
+docker ps
+
+give user and password for admin 
+
+
+
+or 
+
+docker volume create portainer_data
+
+docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
+
+or 
+
+ docker run -d -p 9000:9000 --privileged -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data --name portainer portainer/portainer
+
+
+admin
+adminadmin
+

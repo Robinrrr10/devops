@@ -1,0 +1,54 @@
+To install operating system in automation we can use below tools
+------------------------
+
+Kickstart
+OpenQRM
+Cobbler
+Spacewalk
+Fully Automatic Installation  - FAI
+
+
+
+PXE
+
+
+
+RPM creation
+
+
+To build RPM file
+---
+Summary: one line description of package
+Name: name of the rpm file which needs to be used
+Version: version of rpm file
+Release: This release number of the version
+Copyright: say how package is copyrighted
+Group: Group that package belong to
+Source: give location of source file
+
+
+
+build command is used to build
+
+example rpm name:
+MySQL-client-3.23.57-1.i386.rmp
+
+MySQL-client    - package name
+3.23.57   - version
+1         - release
+i386      - architecture
+
+
+
+
+
+--
+
+yum grouplist
+
+
+/etc/yum.repos.d
+
+
+
+

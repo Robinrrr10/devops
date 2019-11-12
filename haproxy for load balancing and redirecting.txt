@@ -1,0 +1,156 @@
+ha proxy
+---------
+
+yum install haproxy -y
+
+go to /etc/haproxy using below command
+cd /etc/haproxy
+
+open haproxy.cfg
+vi haproxy.cfg
+
+go to bottom of the file and add below configuration
+
+frontend webserver
+	bind *:80
+	default_backend appserver
+
+backend appserver
+	balance roundrobin
+	server node1 192.168.40.142:8081 check
+	server node2 192.168.40.143:8080 check
+
+
+
+then start haproxy
+service haproxy start               or   systemctl start haproxy
+
+
+
+Others example
+---
+
+frondend for 
+
+frontend webserver
+	bind *:80
+	act url_blog path_beg /login
+	default_backend appserver
+	
+
+backend appserver
+	balance roundrobin
+	mode http
+	server node1 192.168.40.142:8081 check
+	server node2 192.168.40.143:8080 check
+
+
+
+Different types of load balancing algorithms
+----
+Round robin   - one by one      //This will send one request to one server and next request to next server
+Least connection    - depend on load    //This will work on load based. If server 1 is load. then it will send request to server 2
+Source    - depend on user/source ip        //This will check source ip and content and then decide to which server it needs to send the request
+Sticky sessions   - continues connection     // For long session this is used
+Health check   - to check server availability   //This will check the health of other server. if any server is not good it wont send request to that server
+
+
+
+
+
+
+global
+   
+here the log will also the there. we can also log in remote machine also
+it also contains so many other configuration
+
+
+
+defaults
+
+This contains all default configuration
+
+
+
+mode http
+
+or
+
+mode tcp
+
+balance leastconn
+
+balance source
+
+balance roundrobin
+
+
+
+
+haproxy 1.5 or newer  version will support pearing
+
+
+
+peers mypeer                              //for connecting two ha proxys  . if we see any error while reload after adding peers. check haproxy version
+	peer ha1 192.168.40.67:1024
+	peer ha1 192.168.40.68:1024
+
+
+stick-table type ip size 20k peers mypeer
+
+
+
+
+another example
+----------------
+frontend http_front
+   bind *:80
+   stats uri /haproxy?stats
+   acl url_blog path_beg /blog
+   use_backend blog_back if url_blog
+   default_backend http_back
+
+backend http_back
+   balance roundrobin
+   server <server name> <private IP>:80 check
+   server <server name> <private IP>:80 check
+
+backend blog_back
+   server <server name> <private IP>:80 check
+The front end declares an ACL rule named url
+
+
+
+Example 2
+---------
+frontend uiweb
+        bind *:80
+        acl url_blog path_beg /blog
+        use_backend blog_server if url_blog
+        default_backend myweb_server
+
+backend myweb_server
+        balance roundrobin
+        server wser1 192.168.40.136:80  check
+        server wser2 192.168.40.137:80  check
+        server wser3 192.168.40.138:80  check
+
+backend blog_server
+        server bser1 192.168.40.137:80  check
+
+
+
+
+
+
+
+
+link:
+https://www.youtube.com/watch?v=1deGB63U7d4
+
+http://www.inanzzz.com/index.php/post/w14j/creating-a-single-haproxy-and-two-apache-containers-with-docker-compose
+
+
+-------------------
+
+

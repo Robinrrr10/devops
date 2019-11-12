@@ -1,0 +1,133 @@
+Prerequest
+----------
+nexus artifact user name with password
+nexus url for saving snapshorts
+nexus url for saving releases
+
+
+---------------------------------
+
+In pom.xml add below inside <project> tag
+-----------------------------------------
+
+ <distributionManagement>
+   <snapshotRepository>
+      <id>nexus-snapshots</id>                                                       //This id should match with maven settings.xml 
+      <url>http://nexus.artifactory.com:8081/repository/maven-snapshots</url>             //This is the url for saving snapshorts
+   </snapshotRepository>
+   <repository>
+   	  <id>nexus-release</id>                                                     //This id should match with maven settins.xml 
+   	  <url>http://nexus.artifactory.com:8081/repository/maven-releases</url>        //This is the url for saving releases
+   </repository>
+</distributionManagement>
+
+  <build>
+	<plugins>
+		<plugin>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.8.1</version>
+            <executions>
+               <execution>
+                   <id>default-deploy</id>
+                   <phase>deploy</phase>
+                   <goals>
+                     <goal>deploy</goal>
+                   </goals>
+               </execution>
+            </executions>
+       </plugin>
+       <plugin>
+   			<groupId>org.apache.maven.plugins</groupId>
+   			<artifactId>maven-deploy-plugin</artifactId>
+   			<version>2.8.2</version>
+   			<configuration>
+      			<skip>true</skip>
+   			</configuration>
+		</plugin>
+		<plugin>
+   			<groupId>org.sonatype.plugins</groupId>
+   			<artifactId>nexus-staging-maven-plugin</artifactId>
+   			<version>1.5.1</version>
+   			<executions>
+      			<execution>
+         			<id>default-deploy</id>
+         			<phase>deploy</phase>
+         			<goals>
+            			<goal>deploy</goal>
+         			</goals>
+      			</execution>
+   			</executions>
+   			<configuration>
+      			<serverId>nexus</serverId>
+      			<nexusUrl>http://nexus.artifactory.com:8081/nexus/</nexusUrl>
+      			<skipStaging>true</skipStaging>
+   			</configuration>
+		</plugin>
+	</plugins>
+ </build>
+
+
+
+
+
+
+In maven settings.xml add below inside <servers> tag
+-----------------------------------------------------
+
+   <server>
+
+      <id>nexus-snapshots</id>                 //This id should match with id in pom.xml
+       <username>robinrrr10</username>         //Give nexus user name   
+     
+       <password>admin</password>           //Give nexus user password
+   </server>
+
+   <server>
+
+      <id>nexus-release</id>                  //This id should match with id in pom.xml
+      <username>robinrrr10</username>          //give nexus user name   
+ 
+      <password>admin</password>                //Give nexus password
+   </server>
+
+
+--------------------------------------------------------
+
+
+Command to deploy artifact
+-----------------------------
+
+mvn clean deploy
+
+
+
+
+---------------------------------------------------------
+
+refer below website url for nexus deploy
+--------------------------------
+https://www.baeldung.com/maven-deploy-nexus
+
+---------------------------------------------------------
+
+
+
+
+
+To download this jar in other project give below in other project pom.xml under <project> tag
+--------------------------------------------------
+
+<repositories>
+      <repository>
+         <id>snapshots</id>
+         <url>http://nexus.artifactory.com:8081/repository/maven-snapshots</url>
+      </repository>
+      <repository>
+         <id>releases</id>
+         <url>http://nexus.artifactory.com:8081/repository/maven-releases</url>
+      </repository>
+</repositories>
+
+
+-------------------------------------------------------
+

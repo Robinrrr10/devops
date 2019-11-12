@@ -1,0 +1,1004 @@
+Version control
+---------------
+
+Git
+---
+To initialize the repository give below command
+Go to directory you need to initialize git
+cd /home/myweb
+git init
+
+
+To add any file in repo give below command
+git add filename    Eg: git add file.java   or you can use git add . //to add all changes or git add -A   //this also you can use
+
+To check the status of the repo. what are files are changed, what are the files added etc give below command
+git status
+
+To add the file in local pc repo give commit command with message
+git commit -m "give any message here"
+
+To add remote repository for local pc repo, we need to add the url of remote repository using below command
+git add remote origin "urlof remote repo"            Eg: git add remote origin "https://github.com/robinrrr10/myweb.git"
+
+To get the files and changes in remote git repository we need to give give below pull command
+git pull origin branchname       Eg: git pull origin master
+
+To copy the local files to remote git repository, give below command
+git push origin branchname       Eg: git push origin master
+
+
+
+
+
+To create new repository give below command
+git init
+
+git remote add origin "gitrepourl"  //Used to repository url to project  Eg: git remote add origin "https://github.com/robinrrr10/myweb.git"   //This will link project to the url
+
+git clone  url  //To clone existing project  Eg: git clone https://github.com/robinrrr10/myweb.git
+
+git status   //this will give modified files, newly added files and show information of deleted files. Basically it will show all untracted files of repo
+
+git add filename   //to add the file Eg: git add index.html
+
+git commit -m "commit message"  //This is to confirm the changes. This will push code to local repository of the pc
+
+git add -A    //This will add all changes. This works like command: git add .
+
+git commit -a -m "commit message"   //This is to add all files and commit. Donot use -a if any new files are added. This will work only for file modification. This wont work for newly added files
+
+git all        //Will give detail about history of commit
+
+git branch   //will all available branches
+
+git branch newbranchname   //This is to create branch  Eg: git branch develop   //new branch will be created with master branch code.
+
+git checkout branchname    //To switch to the branch. To move from one branch to another  Eg: git checkout develop    //Now you will be moving to develop branch
+
+git merge branchname     //This will merge givenbranch with current branch. Eg: git merge develop    //This will merge develop branch code to current branch. If your current branch is master, now the master contains all changes of develop branch. but in develop branch there wont be any change
+
+git rebase branchname    //This will merge givenbranch with current branch as like merge. But it will also takes all commit details of the givenbranch to the current branch. So whole history is maintained
+
+git push origin branchname   //This will push the changes to remote repository. If there is no branch in remote, it will automatically create the branch.   Eg: git push origin develop
+
+
+
+
+To revert back to previous changes.file:
+-----
+First check the log using below command
+git log         //This will give all commit with commit message and commit code
+
+Copy first 8 digit of the commit Id. where we need to revert to particular file
+
+give below commad
+git checkout first8digitofcommitid filename   //This will revert the file to particular commit Eg: git checkout 09hbja3s index.html    //Now the index.html will be reverted back to the give commit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Github
+------
+While creating new repository if you tick "Initialize this repository with a README", then it will create repo which contains readme file
+
+While creating new repository it self we can add .gitignore
+
+We can edit any file in github web itself and we can commit there it self
+
+to get the url of the repo go the project repository, click clone or download copy the url link
+
+To use ssh clien clone or download. Then dropbox in left side corner click use ssh
+
+
+To connect github to local pc using ssh key:
+
+ssh-keygen         //to gendrate public key
+
+copy the content of file id_rsa.pub
+
+Go to github
+
+Go to settings
+
+Go to ssh and gpg keys
+
+click new ssh key
+
+just give any title name
+
+in key paste the copied content of id_rsa.pub
+
+to authencate successfully type below command
+ssh -T git@github.com                  //Here we will success message
+
+Now check the ssh key. The key will become green color
+
+
+
+
+
+
+-----------------------------
+
+
+Docker
+------
+------
+
+
+Start docker using below command
+systemctl start docker                //if it ask for password give password
+
+to view list of docker image available give below command
+docker images
+
+to pull any image give below command
+docker pull imagename       Eg: docker pull ubuntu   //First the pull will search the image in local. if it is not available then it will pull from docker hub from internet
+
+to run a container give below command
+docker run -it imagenameorid   Eg: docker run -it ubuntu
+
+
+
+Example Dockerfile
+--
+
+
+FROM node:7-onbuild    //here we are saying that build as from offical base docker image
+
+LABEL maintainer "miir@getintodevops.com"    //This is just optional
+
+HEALTHCHECK --interval=5s \                  //This will check and tell whether the server is up or not
+	    --timeout=5s \
+	    CMD curl -f http://127.0.0.1:8000 || exit 1
+
+EXPOSE 8000                                   //This we are saying that in which port the server should run
+
+------
+
+
+
+To create docker image using Dockerfile give below command
+sudo docker build /path/to/my/dockerfile   //give which path we need dockerimage     //This will build the image
+
+above command will create dockerfild and give image id at the end
+
+To run dockerimage as container give below command
+docker run -it imageid  Eg: docker run -it 815hjkj12abcc
+
+it will be running and listening at the shown port
+
+
+
+Docker commands in terminal or shell
+------------------------------------
+docker ps              - list all running container
+docker ps -a           - list all available container
+docker images          - list all docker images
+docker build -t imagename dockerfilepath    - to build docker image Eg: docker build -t bankAppInUbuntu /home/alldockerfile/
+docker run --rm -p 4200:4200 imagename    - To run a container. Here --rm is run in recurcive mode -p is for port mapping i mapping my port 4200:4200. Eg: If i give 80:4200 . outside if some one give port 80 then only they can access the app
+docker stop containerId  - to stop container   Eg: docker stop jkhkh9u9uoih988uy9
+
+Docker commands in docker file
+------------------------------
+FROM node:6                       - to download node as the base image
+RUN mkdir -p /usr/src/app         - to create directory /usr/src/app                  - RUN is used to RUN any command
+WORKDIR /usr/src/app              - change /usr/src/app as my working directory
+COPY file.proerties /usr/src/app  - copy file.propertis file to /usr/src/app
+EXPOSE 4200                       - run on the port number 4200
+
+
+
+To install docker
+-----------------
+first update all using below command
+yum update
+Then give below commad to install required component in out osss
+yum install linux-image-extra-$(uname -r) linux-image-extra-virtual
+to install docker give below command
+yum install docker-engine
+to start docker give below command
+service docker start
+
+docker pull imagename    //Eg: docker pull centos   //First it will try to 
+to create container below command
+docker run -it imagename   //Eg: docker run -it centos
+
+
+To run docker compose
+---------------------
+First install python-pip then only we can start install docker-compose
+yum install puthon-pip
+pip install docker-compose
+mkdir directoryname
+cd directoryname
+vi docker-compose.yml
+
+docker-compose up -d           //This will create all container in docker-compose
+
+
+Example docker-compose.yml
+
+wordpress:                     //containername
+  image: wordpress
+  links:
+    - wordpress_db:mysql            //to link conta 
+  ports:
+    - 8080:80
+wordpress_db:
+  image: mariadb
+  environment:
+    MYSQL_ROOT_PASSWORD: robin
+phpmyadmin:
+  image: corbinu/docker-phpmyadmin
+  links:
+    - wordpress_db:mysql
+  port
+    - 8181:80
+  environment:
+    MYSQL_USERNAME: root
+    MYSQL_ROOT_PASSWORD: robin
+
+
+
+
+--------------------------------------------------
+
+
+
+Jenkins
+-------
+-------
+
+To check the whether any changes have been done or not
+Go to the job-> go to Build trigger-> poll SCM //This will check whether any changes is done or not
+Then give schedule as * * * * * //This will check in every minute
+
+
+To give pipeline 
+Go to job-> advanced project options -> Pipeline -> Select Pipeline script from SCM
+->in SCM select GIt -> then give git url and the credential //credential should contain username and password of repository
+give branch name
+in script path give file name  Eg: Jenkinsfile
+Then apply and save
+
+
+Example jenkinsfile
+----
+
+node{
+	def app
+	
+	stage('Clone repository') {
+		checkout scm
+	}
+
+	stage('Build image') {
+		app = docker build("robin/path")   //Give docker hub repository path 	
+	}
+
+	stage('Test image') {
+		app inside {
+			sh 'echo "Tests Passed"'
+		}
+	}
+
+	stage('Push image') {
+		docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credential') {     //docker-hub-credential is the credential of docker in jenkins
+			app.push("${env.BUILD_NUMBER}")
+			app.push("latest")
+		}
+	}
+}
+
+
+
+
+To create credential in jenkins
+-------------------------
+Go to credentials - > global -> system or add credential
+Select user name with password
+Give username, password and the Id
+This Id we are using most of the place in jenkins 
+
+
+To check the code review is standard or not 
+---------------------------------------
+in build
+select invoke top level maven target and give below command
+
+-P metrics pmd:pmd                 //This will check unused code or variable etc
+
+in Post-build Actions
+select publish PMD analysis result and give below
+**/*.xml                           //This will display the result of code standard like unused code etc
+
+result will be in PMP warding in dashboard of the jobs
+
+To build the job when other job is done
+----------------------------------------
+In build trigger select build after other project are build
+In project to watch give other job name
+select trigger only if build is stage
+
+
+Pipeline view
+-------------
+Pipeline view is to view the job which run one after another
+Go to new view
+Select pipeline view
+in pipeline flow select initial job
+
+
+To deploy war in tomcat server using jenkins //Add deploy to a container plugin
+--------------------------------------------
+0..1 Before deploying check tomcat
+0..2 open the file tomcat/webapps/manager/META-INF/context.xml
+0..3 Comment whatever inside <Context></Context>
+0..4 Save and restart tomcat
+0..5 you can add user to deploy war by now itself by following 5..a to 5..b
+0..6 restart tomcat
+1. In post build action select deploy war/ear to a container                      //before that war file should be availabe so in build give maven command install or package
+2. In WAR/EAR files give below
+**/*.war
+3. In containers click add container
+4. Select tomcat with correct version
+5. In credentials give manager script user name ans password. below you can find detail
+5..a   To add deploy using jenkins add manager-script with user name and password in tomcat/conf/tomcat-users.xml. Give inside <tomcat-users>
+Eg: 
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<user username="yourusername" password="yourpassword" roles="manager-gui,manager-script" />
+5..b restart tomcat
+
+
+5..c  In jenkins, add credentials with same user name and same password
+5..d Thats it select this credential 
+6. Give tomcat url   Eg: http://localhost:8080
+
+
+
+For sending sending Email notification
+------------------------------
+go to the Job->configure->Build settings
+In Build settings tick Email notification
+Give recipient emialId
+and save the job
+
+
+Build periodically    
+------------------
+minutes hours day month weekday
+* * * * *               - run in every one minutes
+* * * * 1-5             - run from monday to friday at every one minute
+30 13 * * 4             - run on thursday at 1:30 PM
+10 8 2 4 *              - run on April 2nd at 8:10 AM
+15,30 1,2,17 * * 6,7     - run on saturday and friday at 1:15 AM ,1:30 AM, 2:15 AM, 2:30 AM and 5:15 PM and 5:30 PM
+*/10 * * * *           - run on every 10 minutes
+*/15 */12 * * *         - run on every 12 hours and in every 15 minutes ie: 12:00 12:15, 12:30, 12:45, 00:00 00:15, 00:30, 00:45
+H/15 * * * *            - every 15 of every hours
+H H(9-16)/2 * * 1-5     - run once in every two hours between 9 AM and 5 PM from moday to friday
+
+
+Difference between * H
+*/15 * * * *    - it will run on every 15th minutes of each hour . If current time is 1:05, it will run on 1:15
+H/15 * * * *    - this will run on the gap or 15 minutes. If current time is 1:05, it will run on 1:20
+
+
+
+jenkins slave machine
+---------------------
+Install jenkins client in slave machine
+
+
+other notes of jenkins
+-----------------------
+Jenkins will be installed in /var/lib/jenkins
+type below command and check jenkins
+cat /etc/passwd           //Here we can check jenkins home directory
+
+In jenkins directory
+job directory will have all jobs
+log directory will have all logs
+nodes directory will have all jenkins save machine
+plugins directory will have all installed plugins
+secret directory will have all the keys
+users directory will have all users of jenkins
+workspace directory will have all actual code
+
+
+in jenkins while creating new item/job, it will ask us to select any catagory.
+freestypeproject will give all plugins and all
+maven will give only things required for maven
+
+
+in jenkins dashboad in right side it will show Build Executor status
+Here it will show number of Idle.This means how many job should run parallelly. default it will have two
+It is good practise to have number of idle based on number of core of cpu. if cpu core is 4 it is better to have maximum of 4 idle
+
+
+
+
+To add jenkins slave
+--------------------
+Go to manage jenkins
+Click manage nodes
+Click new nodes
+Give name to the slave 
+Select permanent agent
+Give remote root directory   Eg: /home/robin
+In launch method select launch slave agent via SSH
+Give ip address
+Give credential Eg: username as root   and password as root
+
+to install in slave machine:
+---
+Install java. then only java application willl work
+install maven. Then only maven command will work
+install git. then only git command will work
+What ever environment given in jenkins will take same environment
+
+to run job on slave machine
+----
+install plugin "scoring load balancer"
+after adding check in job config. tick preference of node
+give node name or label. Give priority to 1
+Now build and check in build executor status.
+It should run on the given slave node
+
+
+
+If we missed the password
+-------------------------
+go to jenkins installed home directory
+open config.xml
+change useSecurity to false
+
+
+To change jenkins port number
+----------------------------
+open below files
+vi /etc/default/jenkins
+
+
+
+To change number of executor  (number of jobs allow to run parallelly)
+-----------------------------
+To change number of jobs allow to run parallelly
+Go to manage jenkins -> configure system
+There you can find # of executor
+Give the value and save it
+
+
+
+
+to do code review
+-----------------
+Go to goal in job type below commad
+-P metrics pmd:pmd                //This will do code review
+
+In post build action select publish PMD analysis result. Dont give any in text
+
+
+
+Notes:
+-----
+If we select freestyle project to add maven command
+Go to Build-> select top level maven target. Then give the command 
+
+
+
+
+
+
+
+
+------------------------------------------------
+
+
+
+Maven
+------
+------
+compile   - will compile 
+test - is used to test
+package - is used to package
+
+compile->test->package
+compile after code review is done
+test after compiling is done
+package after test is done
+
+
+maven compiler plugin and maven surefire plugin should be available in pom.xml 
+
+we can also include testng xml in maven surefire plugin
+before closing plugin tag
+add below
+<configuration>
+<suiteXmlFiles>
+<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+</suiteXmlFiles>
+</configuration>
+
+
+in property you can the file
+<properties>
+<suiteXmlFile>testng.xml</suiteXmlFile>
+<skiptests>false</skiptests>
+</properties>
+
+
+
+
+To do code review using maven:
+
+mvn -P metrics pmd:pmd
+
+
+
+
+-----------------------------------------------
+
+
+Tomcat
+-------
+-------
+To deplay directly in tomcat
+Go to tomcat url page
+Click manager app  //if ask for password give it
+Go to Deploy
+Give context path   Eg: /robapp //This will be path after base url . This will give localhost:8080/robapp
+in war or diretory url give the whole path of the war   /usr/myapps/robapp/target/robapp.war
+Click deploy
+Then it will depoly. We can see    the application is available in Application dialog box
+Now we can give the url and we can check   Eg: localhost:8080/robapp
+It should work
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------
+
+pull configuration toll
+-----------------------
+puppet
+chef
+
+push configuration toll
+-----------------------
+ansible
+saltstack
+
+----------------------------------------------------------------------------
+
+Ansible
+-------
+-------
+It is configutation management deployment tool
+It is push based. It will push the same configuration to another server
+We can specify host ip also
+What ever configuration I have will be push to anther server
+In hostfile we will mension the ip address of other server
+
+
+open hosts file using below command
+vi /etc/ansible/hosts
+below [webservers] add ip address which we need to push same configuration
+
+Eg:
+[webservers]
+192.168.40.128                - now the configuration of your current server will be pushed to 192.168.40.128 servers
+
+To deploy configuration give below command
+ansible -m ping all              -Now whatever ip address avaliable in hosts file will be deployed with current server configuration For only particular server you can give Eg: ansible -m pint 192.168.40.128
+
+
+
+
+To install ansible in cent os
+---
+yum install epel-release
+
+yum install ansible
+
+ansible --version
+
+
+
+-------------------
+
+
+
+-------------------------------------------------------------------------
+
+Puppet
+------
+------
+
+
+
+in puppet master
+----------------
+puppet cert list    //list all pending approval 
+
+puppet cert sign puppetagent         //To sign puppet agent certificate
+
+
+in puppet slave/agent
+---------------
+puppet agent -t      //to gendrate puppet agent certificate
+puppet agent -t
+
+
+puppet resources and classes
+----------------------------
+
+Syntax
+------
+resource_type { 'resource_name'
+	attribute => value
+....
+}
+
+Example:
+file { '/etc/inetd.conf' :
+	ensure => '/etc/inet/inetd.conf',
+}
+
+
+class syntax
+------------
+
+class example_class {
+.....
+.....
+}
+
+
+
+class { 'class_name': }
+
+Example:
+class { 'apache': }
+ apache::vhost{ 'example.com':
+ port    => '80',
+ docroot => '/var/www/html'
+ }
+}
+
+
+
+package { 'httpd':
+ ensure => installed,
+}
+
+service { 'httpd':
+ ensure => running,
+}
+
+
+
+vi /etc/puppet/manifest/site.pp
+
+
+puppet modules
+---
+/etc/puppet/modules
+
+puppet module install puppetlabs-mysql --version 3.10.0
+
+puppet module install mayflower-php --version 4.0.0-beta
+
+
+
+include '::mysql:server'
+include '::php'
+
+
+--------------------------------------------------
+
+Others
+-------
+For high availability and high scalabil
+ity with redendency use below
+
+We can use  HA proxy for load balancing
+
+VPS
+
+we can use any ip address starts from 127.   .This will connect to localhost only
+we use from 127.0.0.1 to 127.255.255.255, these all will connects to localhost onlys
+
+
+in VM or virtualbox, 
+host only will used to connect main machine to local
+NAT can be used to connect internet 
+
+
+To change the hostname give below
+hostname givehostname Eg: hostname myvm
+we can change in /etc/hostname also
+
+in /etc/hosts   is for mapping ip address to domain name mapping
+
+
+if ping command not works give telnet command
+Eg:
+telnet ipaddress portnumber
+
+Eg: telnet 192.168.40.128 22
+
+
+
+--------------------------------------------------
+
+
+Connecting with SSH key
+-----------------------
+
+Add the group first using below command
+groupadd groupname   Eg: groupname testuser
+
+Add the userwith the same group using below command
+useradd -G groupname -d /path/foruser -m -s /bin/bash username       Eg: useradd -G testuser -d /home/ramu -m -s /bin/bash ramu
+
+we can check whether the user is added or not using below command
+cat /etc/passwd
+
+swith the user
+su username       Eg: su ramu
+
+to go to user directory give below command
+cd
+
+check the path is using below command
+pwd
+
+then make a diretory
+mkidir name.git   Eg: mkdir myrepo.git
+
+go to that directory
+cd name.git   Eg: cd myrepo.git
+
+initialize the git using below command
+git --bare init                            //This will create repository     //--bare should be given only in server. --bare is given means we cannot see the workspace code   or we can also use without base   Eg: git init
+
+give below command to check whether some new default files and directory came or not using below commands
+ls
+
+to set password use below command
+passwd username   Eg: passwd ramu               //Now you can set the password
+
+
+To create the key:
+--
+Use below command to gendrate the key
+ssh-keygen                  //do not give any passprase. Check key is created or not using command: cat ~/.ssh/id_rsa.pub
+
+
+Now go to next machine
+-
+
+type below
+ssh-keygen
+
+to copy the key to this machine give below command
+ssh-copy-id -i username@ipaddressOfThatmachine   Eg: ssh-copy-id -i ramu@192.168.40.128               //Then give password. This will ask password only one time for now       //Check key is copyied or not using command: cat ~/.ssh/authorized_keys    //It should show same key which is generated on that machine
+                                                 //now own machine id is copied to given ip address machine. When we connect using ssh, that machine will check and allow
+
+
+now check whether the key is working or not. just ssh again using below commad. It should not ask for password
+ssh username@ipaddress     Eg: Eg: ssh ramu@192.168.40.128
+
+now clone the project using below command
+git clone user@ipaddress:projectname.git     Eg: git clone git@192.168.40.128:myrepo.git
+
+now ls and check whether it is cloned or not using below command
+ls
+
+now go into cloned directory using below command
+cd directoryname    Eg: cd repo
+
+now check all hidden files inside using below command. It should show .git
+ls -a
+
+now go inside .git directory
+cd .git
+
+now give ls and check
+ls                //It will show all availables
+
+git add filename    //This will add the files in stage which needs to be pushed Eg: git add index.html
+
+git status    //will show files changes etc
+
+git status -s   //will show files changes in short
+
+git commit -m "commit messages"    //This is used to confirm with messages  Eg: git commit -m "i have changes pom files"
+
+git clone url folder  //To clone the project in particular directory   Eg: git clone git@192.168.40.128:myrepo.git  myproject    
+
+
+To set user config in git
+git config --global user.name username    //Used to set git user
+git config --global user.email email      //Used to set git users email
+
+to check url for push and pull just give below command
+git remote -v
+
+git push origin master    //changes will be used to remote repository
+
+git pull   //we can also used this command to pull
+
+git log      //this will give latest commit id.                     //We can also pull with commit id 
+
+git stash      //this will save new changes in some hidden files. modify that file to previous head file. so no changes will be there in current once given this command
+
+git stash pop    //this will give back the changes which is stash
+
+git commit -a -m "commit message"  //This will commit with all changes which using add command. //have to check
+
+git branch       //will show all available branch
+
+git branch newbranchname   //To create new branch   Eg: git branch develop   //while creating the branch will take copy from master
+
+git checkout branchname       //to switch to other branch. to move from one branch to another
+
+git merge branchname    //this will merge all changes in givenbranch to current branch. Eg: git merge develop    .This will merge all changes in develop to current branch
+
+git checkout filename      //this will revit to head file. So new changes after head will be removed. changes which is not commited will be removed
+
+git diff        //this will show difference of head and new changes
+
+ 
+
+
+
+
+//First add .  ,  then commit , then pull it and then push it
+
+
+
+
+
+
+
+To copy the ssh-key
+--------------------
+
+[root@localhost myrepo]# cat ~/.ssh/id_rsa.pub                  //Copy from here. If key is not there  just add the key using command: ssh-keygen
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtq8/m0imwkBjcA+5b4AqQY0/EAP6jEiTzotJM+dEcrL1OY1LqLLTMDf3S49q7wRoN4VcsWmCXU/MPk32WALadE41A/t8DGh8dCBg8hFUb3uS6D4Qjyz6hGymguyNzZCNd7isxat79A2J04Pn8hpgv/r/KsWuK+HSU94zsntwcIX6pZJiwFHhqyYDgMXg7iSL2FtaXuVFtcg4TDpIKJUmg7RFxpvvdo5axMzvAzNW2N5UwoRuoM3Kyk5oM7q8kOgOAM69gVlC+WrwMR2hO6dxg7sqVcGYCzy3F6k8ElyxA273c+j/byh6JiDclwMqJWS/8gsVfyvr50qN1cZUhFnfX root@localhost.localdomain
+
+
+[gitusr@gitmachine root]$ cat ~/.ssh/authorized_keys             //paste here. If the authorized_keys file is not there then create it
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtq8/m0imwkBjcA+5b4AqQY0/EAP6jEiTzotJM+dEcrL1OY1LqLLTMDf3S49q7wRoN4VcsWmCXU/MPk32WALadE41A/t8DGh8dCBg8hFUb3uS6D4Qjyz6hGymguyNzZCNd7isxat79A2J04Pn8hpgv/r/KsWuK+HSU94zsntwcIX6pZJiwFHhqyYDgMXg7iSL2FtaXuVFtcg4TDpIKJUmg7RFxpvvdo5axMzvAzNW2N5UwoRuoM3Kyk5oM7q8kOgOAM69gVlC+WrwMR2hO6dxg7sqVcGYCzy3F6k8ElyxA273c+j/byh6JiDclwMqJWS/8gsVfyvr50qN1cZUhFnfX root@localhost.localdomain
+
+------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+ 
+DNS in linux and windows
+------------------------
+------------------------
+
+To set hostname in linux
+-------------------------
+To change the hostname give below
+hostname givehostname Eg: hostname myvm
+we should change in /etc/hostname also              //Check here also it should be changed
+
+in /etc/hosts   is for mapping ip address to domain name mapping
+
+
+To set hostname in windows
+-------------------------
+Go to C:\Windows\System32\drivers\etc
+And add host as like below
+	ipaddress	hostname   Eg: 192.168.40.125	gitmachine
+
+
+Connect linux using putty by giving hostname and check
+
+
+------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------
+
+
+Project to do
+-------------
+
+To execute below pipeline with diffenent job trigger after job
+s
+Get from git and compile using maven compile command -> Get from git and do code review using PMP -> get from git and then run test using maven test command -> then get from git abd then package the war using maven package command -> Then get from git and deploy in tomcat using deploy war to container
+
+
+---------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------
+ 

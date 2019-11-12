@@ -1,0 +1,50 @@
+Redis
+------
+
+This is no sql database
+
+This will store all data in memory (ram). 
+
+
+
+To install redis in cent os
+----------------------------
+
+yum install epel-release
+
+yum install redis
+
+
+systemctl start redis
+
+
+
+
+
+To go into redis cli
+--------------------
+
+redis-cli
+
+
+
+SET "name" "robin"  //used to set key and value.
+
+GET "name"
+robin                   //This will give value of name key
+
+
+SUBSCRIBE mychannel
+
+
+
+PUBLISH mychannel "hellow how are you"
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+To add user or group with full admin sudo permission
+----------------------------------------------------
+----------------------------------------------------
+
+Step 1:
+open sudoers file using any one of below command
+------------------------------------------------
+
+visudo
+
+or 
+
+sudo visudo
+
+or
+
+vim /etc/sudoers
+
+sudo  vim /etc/sudoers
+
+
+Step 2: 
+To add all sudo permission to user, add below line in that file and save it
+---------------------------------------------------------------------------
+username ALL=(ALL)       ALL
+
+Step 2:
+To add all sudo permission to group, add any of the below line in that file and save it
+---------------------------------------------------------------------------------------
+%groupname  ALL=(ALL)       ALL                  //this will give all permission. but every time we need to enter user password
+
+or
+
+%groupname        ALL=(ALL)       NOPASSWD: ALL     //This will give all permission. here password is not used
+
+------------------------------------------------------------
+
+Now try
+--------
+sudo ls /root      //before command use sudo
+
+
+IMPORTANT
+---------
+before any command use sudo, then only it will work
+Eg: 
+sudo ls /root            
+
+
+----------------------------------------------------------------
+
+
+

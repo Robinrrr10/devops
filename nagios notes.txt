@@ -1,0 +1,525 @@
+Nagios
+-----
+Installation of nagios
+----------------------
+dl.fedoraproject.org/pub/epel/6/
+
+x86_64
+
+epel-release-6-8.noarch.rpm
+
+rpm -ivh https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm
+
+ 
+rpm.famillecollet.com/enterprise/
+
+remi-release-6.rpm
+
+rpm -ivh http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+
+yum -y install nagios nagios-plugin-all nagios-plugin-nrpe nrpe httpd php
+
+
+chkconfig httpd on && chkconfig nagios on
+
+service httpd start && service nagios start
+
+dd if=/dev/zero of=/swap bs=1024 count=2097152
+
+mkswap /swap && chown root. /swap && chmod 0600 /swap && swapon /swap
+
+echo /swap swap swap defaults 0 0 >> /etc/fstab
+
+echo vm.swappiness = 0 >> /etc/sysctl.conf && sysctl -p
+
+htpasswd -c /etc/nagios/passwd nagiosadmin
+ //give password
+
+
+
+
+
+localhost/nagios
+
+
+--------------------------
+
+
+in remote machine
+----
+
+
+rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch/rpm
+
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+
+yum -y install nagios nagios-plugins-all nrpe
+
+chkconfig nrpe on
+
+vi /etc/nagios/nrpe.cfg
+
+allowed_hosts=192.168.40.56             //nagios server hostname or ip address
+
+save and close
+
+
+iptables -N NRPE
+
+iptables -I INPUT -s 0/0 -p tcp --dport 5666 -j NRPE
+
+iptables -I NRPE -s 192.168.40.56 -j ACCEPT
+
+iptables -A NRPE -s 0/0 -j DROP
+
+/etc/init.d/iptables save
+
+service nrpe start
+
+
+
+
+-------------------
+
+in nagios service
+
+vi /etc/nagios/nagios.cfg
+
+uncomment
+
+cfg_dir=/etc/nagios/servers
+
+save and close
+
+
+mkdir /etc/nagios/servers
+
+cd /etc/nagios/servers
+
+vi /etc/nagios/servers/myclients.cfg
+
+define host {
+	use		linux-server
+	host_name	Client           //hostname
+	alias		Client           //hostname
+	address		192.168.40.57
+	}
+
+define service {
+	use 		generic-service
+	host_name	Client 		//hostname
+	service_description	PING
+	check_command	check_ping!100.0,20%!500.0,60%
+	}
+
+define service {
+	use		generic-service
+	host_name	Client		 //hostname
+	service_description	SSH
+	check_command	check_ssh
+	notifications_enabled	0
+	}
+
+define service {
+	use		generic-service
+	host_name	Client           //hostname
+	service_description	Current Load
+	check_command	check_local_load!5.0,4.0,3.0!10.0,6.0,4.0
+	}
+
+
+save and close
+
+
+
+chown -R nagios. /etc/nagios/
+
+
+service nagios restart
+
+
+
+==========================
+
+
+
+
+Nagios installation
+--------------------
+
+2GB ram
+2 core
+
+
+
+
+cat /etc/redhat-release
+
+systemctl stop firewalld
+
+systemctl disable firewalld
+
+cat /etc/selinux/config | grep SELINUX=e
+
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config  q
+
+cat /etc/selinux/config | grep SELINIUX=d
+
+sestatus
+
+yum install -y wget httpd php gcc glibc glibc-common gd gd-level make net-snmp perl perl-devel openssl
+
+reboot
+
+sestatus
+
+systemctl status firewalld
+
+wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.3.tar.gz
+
+tar -xzvf nagios-4.4.3.tar.gz
+
+useradd nagios
+
+groupadd nagcmd
+
+usermod -a -G nagcmd nagios
+
+cd nagios-4.4.3/
+
+./configure --with-command-group=nagcmd
+
+make all
+
+make install
+
+make install-init
+
+make install-commandmode
+
+make install-config
+
+make isntall-webconf
+
+make install-exfoliation
+
+make install-classicui
+
+cp -rvf contrib/eventhandlers/ /usr/local/nagios/libexec/
+
+chown -R nagios:nagcmd /usr/local/nagios/libexec/eventhandlers/
+
+htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+
+//give password
+
+systemctl start httpd
+
+systemctl enable httpd
+
+systemctl start nagios
+
+systemctl enable nagios
+
+systemctl status nagios
+
+systemctl status httpd
+
+
+
+
+http://192.168.40.23/nagios
+
+//give usernaame and password   //nagiosadmin
+
+
+
+
+cd /usr/local/nagios/libexec/
+
+ls
+
+wget https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+
+ls
+
+tar -xzvf nagios-plugins-2.2.1.tar.gz
+
+cd nagios-plugins-2.2.1/
+
+./configure --with-nagios-user=nagios --with-nagios-group=nagcmd
+
+make
+
+make install
+
+cd /usr/local/nagios/libexec
+
+ls
+
+cd ~
+
+
+-------------------------------
+
+
+Installation of nagios
+----------------------
+
+yum install -y epel-release
+
+yum install -y httpd php
+
+yum install -y unzip gcc glibc-common make gd gd-devel net-snmp
+
+useradd nagios
+
+groupadd nagcmd
+
+usermod -G nagcmd nagios
+
+usermod -G nagcmd apache
+
+mkdir ~/nagios
+
+cd ~/nagios
+
+wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-4.0.7.tg.gz
+
+or
+
+ wget https://sourceforge.net/projects/nagios/files/nagios-4.x/nagios-4.4.3/nagios-4.4.3.tar.gz
+
+
+
+wget http://www.nagios-plugins.org/download/nagios-plugins-2.0.3.tar.gz
+
+or 
+
+wget https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+
+
+tar -xzvf nagios-4.0.7.tar.gz
+
+tar -xzvf nagios-plugins-2.0.3.tar.gz
+
+cd nagios-4.0.7
+
+./configure --with-command-group=nagcmd
+
+make all
+
+make install
+
+make install-init
+
+make install-commandmode
+
+make install-config
+
+make install-webconf
+
+htpasswd -s -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+
+//Give password
+
+
+systemctl start httpd.service
+
+cd ~/nagios/nagios-plugins-2.0.3
+
+./configure --with-nagios-user=nagios --with-nagios-group=nagios
+
+make
+
+make install
+
+/usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+chkconfig --add nagios         or systemctl enable nagios
+
+chkconfig --level 35 nagios on
+
+systemctl start nagios.service
+
+firewall-cmd --permanent --add-port=80/tcp
+
+firewall-cmd --reload
+
+
+
+http://ipaddress/nagios
+
+give user name and password
+
+nagiosadmin
+
+give password
+
+
+---
+
+in nagios server
+---
+
+vim /etc/nagios/nagios.cfg       or /usr/local/nagios/etc/nagios.cfg
+
+cfg_file=/etc/nagios/objects/node.cfg      //Add this line       
+
+or
+
+cfg_file=/usr/local/nagios/etc/objects/node.cfg
+
+save and close
+
+cd /etc/nagios/objects
+
+or
+
+cd /usr/local/nagios/etc/objects
+
+vi node.cfg
+
+define host {
+	use		linux-server
+	host_name	my.clienthost.com          //give ip or hostname of client
+	alias		my.clienthost.com
+	address		192.168.40.186              //Give host ip address
+	max_check_attempts 5
+	check_period	24x7
+	notification_interval	30
+	notification_period 24x7
+}
+
+define service{
+	use		generic-service
+	host_name	my.clienthost.com
+	service_description SSH
+	check_command	check_ssh
+	notifications_enabled 1
+}
+
+define service {
+	use		generic-service
+	host_name	my.clienthost.com
+	service_description	PING
+	check_command	check_ping!100.0,20%!500.0,60%
+	notification_enabled	1
+}
+
+
+save and close
+
+// give permission to file   chown nagios:nagios node.cfg
+
+systemctl restart nagios
+
+
+
+
+
+----------------------------------
+
+
+Nagios client
+-------------
+
+yum install -y epel-release
+
+yum install nrpe nagios-plugins-all openssl -y
+
+vi /etc/nagios/nrpe.cfg
+
+allowed_hosts=127.0.0.1 192.168.40.185                 //Give nagios server ip address
+
+save and close
+
+systemctl start nrpe
+
+systemctl enable nrpe
+
+systemctl status nrpe
+                                  //port is 5666
+
+
+
+----------------
+
+
+
+
+
+To monitor tomcat           //Do everything in nagios server only
+-----------------
+
+yum install perl-XML-XPath perl-libwww-perl
+
+cd /usr/local/nagios/libexec/
+
+curl "https://exchange.nagios.org/components/com_mtree/attachment.php?link_id=2522&cf_id=24" -o check_tomcat.pl
+
+or
+
+wget "https://exchange.nagios.org/components/com_mtree/attachment.php?link_id=2522&cf_id=24" -o check_tomcat.pl
+
+chmod +x /usr/local/nagios/libexec/check_tomcat.pl
+
+         //If need add nagios user permission also  Eg: chown nagios:nagios check_tomcat.pl
+
+./check_tomcat.pl -h
+
+./check_tomcat.pl -H nagios.nagiosclient2.com -p 8080 -l tomcat -atomcat -w 20%,30% -c 10%,20%       //To check whether user is working or not
+
+
+vi /usr/local/nagios/etc/objects/commands.cfg
+
+add below
+
+define command {
+
+   command_name    check_tomcat
+   command_line    $USER1$/check_tomcat.pl -H $HOSTADDRESS$ -p $ARG1$ -l $ARG2$ -a $ARG3$ -w $ARG4$ -c $ARG5$
+}
+
+
+
+save and close
+
+
+
+Now we can add like this to check tomcat
+
+define service{
+        use                     generic-service
+        host_name               nagios.nagiosclient2.com
+        service_description     TOMCAT
+        check_command           check_tomcat!8080!robin!robin123!25%,25%!10%,10%              //here robin is tomcat manager user and robin123 is password. here is manager
+        notifications_enabled   1
+        max_check_attempts      5
+        check_interval          1
+        retry_interval          1
+}
+
+
+save and close
+
+
+/usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+restart nagios
+systemctl restart  nagios
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+

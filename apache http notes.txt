@@ -1,0 +1,38 @@
+Http
+-----
+
+Redirecting url
+---------------
+
+To redirect the  url give below in httpd.conf
+
+
+<VirtualHost *:80>
+RewriteEngine On
+RewriteRule ^/prof http://192.168.40.120/profile
+</VirtualHost>
+
+
+
+//When some one hit url http://hostnameorip/prof  This will go to http://192.168.40.120/profile
+//User can able to see redirected url in browser
+
+---------------------------------
+
+
+To use reverse proxy
+--------------------
+To use reverse proxy give below in httpd.conf
+
+
+ProxyPass "/about" "http://192.168.40.178/abt"
+ProxyPassReverse "/about" "http://192.168.40.178/abt"
+
+
+//When some one hit url http://hostnameorip/about  This will go to http://192.168.40.178/abt
+//User can able to see redirected url in browser
+
+
+-------------------------------------
+
+

@@ -1,0 +1,148 @@
+GitLab community edition installation in cent os  check this url:ss https://www.youtube.com/watch?v=5ytDWzhlPfQ
+-------------------------------------
+vi /etc/resolv.conf
+nameserver 8.8.8.8
+yum update
+yum install curl policycoreutils-python openssh-server
+yum install postfix
+systemctl start postfix
+systemctl enable postfix
+systemctl status postfix
+curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+EXTERNAL_URL="http://10.66.25.50" yum install -y gitlab-ce
+gitlab reconfigure        or     gitlab-ctl reconfigure
+firewall-cmd --permanent --add-port=80/tcp
+or 
+firewall-cmd --permanent --add-service http
+firewall-cmd --permanent --add-service https
+firewall-cmd --permanent --add-service ssh
+firewall-cmd --reload
+http://10.66.25.50
+change root password before login
+
+
+---------------------------
+
+
+or 
+
+
+
+Gitlab installation on cent os 7
+--------------------------------
+
+sudo yum install -y curl policycoreutils-python openssh-server
+sudo systemctl enable sshd
+sudo systemctl start sshd
+sudo firewall-cmd --permanent --add-service=http
+sudo systemctl reload firewalld
+
+sudo yum install postfix
+sudo systemctl enable postfix
+sudo systemctl start postfix
+
+curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+
+
+
+
+Gitlab installation on cent os 7
+------------------------------
+
+sudo yum install -y curl policycoreutils-python openssh-server
+sudo systemctl enable sshd
+sudo systemctl start sshd
+sudo firewall-cmd --permanent --add-service=http
+sudo systemctl reload firewalld
+
+sudo yum install postfix
+sudo systemctl enable postfix
+sudo systemctl start postfix
+
+
+curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh | sudo bash
+
+
+------------------
+
+yum install -y curl policycoreutils-python openssh-server
+
+systemctl enable sshd
+
+systemctl start sshd
+
+firewall-cmd --permanent --add-service=http
+
+firewall-cmd --permanent --add-service https
+
+systemctl reload firewalld
+
+yum install postfix
+
+systemctl enable postfix
+
+systemctl start postfix
+
+curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+
+EXTERNAL_URL="https://192.168.40.137" yum install -y gitlab-ce
+
+
+EXTERNAL_URL="https://192.168.40.172" yum install -y gitlab-ce
+
+
+
+
+
+--------------------------------------
+
+
+
+
+Installation using rpm
+-----------------------
+
+download the rpm file from url https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-12.0.3-ce.0.el7.x86_64.rpm/download.rpm
+
+yum update
+yum install curl policycoreutils-python openssh-server
+yum install postfix
+systemctl start postfix
+systemctl enable postfix
+systemctl status postfix
+
+firewall-cmd --permanent --add-service http
+firewall-cmd --permanent --add-service https
+firewall-cmd --permanent --add-service ssh
+firewall-cmd --reload
+
+curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+
+EXTERNAL_URL="http://git2.gitlab2.com" rpm -ivh gitlab-ce-12.0.3-ce.0.el7.x86_64.rpm       //give your hostname of ip address
+
+
+http://git2.gitlab2.com
+
+change root password before login
+
+
+
+
+gitlab will be installed in below path
+/opt/gitlab
+and some config files will be in below path
+/etc/gitlab/
+
+
+To start:
+gitlab-ctl start
+
+To stop:
+gitlab-ctl stop
+
+
+
+
+Other method of installation of git
+---------------------------------
+https://www.howtoforge.com/tutorial/how-to-install-and-configure-gitlab-ce-on-centos-7/
