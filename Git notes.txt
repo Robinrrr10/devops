@@ -138,6 +138,13 @@ git rebase master  //merge all commits of all branch with master
 
 
 
+git remote -v         //To list git remote url
+git remote set-url origin url        //To change git remote url
+
+
+
+
+
 
 
 
