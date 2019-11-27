@@ -1,0 +1,625 @@
+Grafana
+-------
+
+Installation
+------------
+
+docs.grafana.org/installation/rpm/
+
+
+sudo yum install grafana_rpm_url
+
+
+Service grafana-server start         - to start grafana
+
+
+grafana port: 3000
+
+open port 3000
+
+
+
+
+in browser 
+192.168.40.187:3000                    //for grafana
+
+username: admin
+password: admin
+
+
+
+
+
+Telegraph
+----------
+
+portal.influxdata.com/downloads
+
+Click on telegraph
+ 
+Go to centos and use that command to install
+
+wget telegraph_rpm_url
+sudo install localinstall telegraf_rpm
+
+
+
+influxdb
+-------
+
+portal.influxdata.com/downloads
+
+Click on inflush db
+ 
+Go to centos and use that command to install and start influxdb
+
+
+
+
+configure 
+---------
+
+
+networking ----|
+Docker---------|
+System stats---|----INSERT---> | InfluxDB (Time-seriest Databas) |<-----REST API------> | Grafana (Data virsualization) |
+Apps-----------|         
+Databases------|
+
+
+configure influxdb
+------------------
+
+systemctl status influxdb     //Service should be running
+
+influx                //to enter into influx db
+
+CREATE USER "robin" WITH PASSWORD 'robrob5' WITH ALL PRIVILEGES   //To create new user
+
+show users       //To view users
+
+exit     //to come out of influx db
+
+
+
+
+vi /etc/influxdb/influxdb.conf
+
+search for http
+make auth-enabled to true which is commented
+now uncomment auth-enabled
+
+auth-enabled = true
+
+
+then save and restart influxdb
+
+sudo systemctl restart influxdb
+
+
+
+configure telegraf
+---
+
+
+
+
+configure in grafana
+---
+
+
+New data source 
+
+name: influx db
+type: influxdb
+
+http
+url: http://localhost:8086
+access: Server(Default)
+
+
+influxDB details
+Database: telegraf
+User: robin password: robrob5
+
+Save & Test
+
+It should show Data source is working
+
+
+
+In grafana
+In dashboard
+In graph
+In metrics, Data sources : influxdb
+
+FROM default win_cpu WHERE host = SRV2012-DC2  //
+
+
+
+
+in client machine:
+
+Go into client
+
+install telegraf as before
+
+
+go to below file for configuring telegraf
+
+vi /etc/telegraf/telegraf.con
+
+
+
+[[outputs.influxdb]]
+
+give url of inflex db and uncomment below urls
+
+urls = ["http://192.168.40.189:8086"]
+
+uncommand database
+
+database = "telegraf"
+
+uncommand HTTP auth
+
+username = "robin"
+password = "robrob5"
+
+
+save and exit
+
+restart telegraph
+
+systemctl start telegraf
+
+
+
+
+
+Now go to grafana
+Create dashboard
+singlestat
+In panel title select edit
+
+Datasource select influxdb
+FROM default disk WHERE host = telegraf
+SELECT field(free)   then remove add sum
+
+In options
+Units bytes
+
+
+
+-----
+
+for vSphere
+-------
+
+                        //have to template   //Go to https://grafana.com/dashboards/8159   copy id and copy all inputs.vsphere
+
+Go to client
+
+vi /etc/telegraf/telegraf.conf
+search for inputs.vsphere
+paste copied on here
+
+
+give vsphere ip address in vcenter
+vcenters = [ "http://192.168.40.40/sdk" ]
+username = "root"           //user name of vsphere
+password = "root"           //password of vsphere
+
+save and restart telegraf
+
+
+In grafana -> import paste id
+
+in influx : influxdb
+
+import
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------
+
+
+Grafana install on cent os
+--------------------------
+
+create a file grafana.repo inside /etc/yum.repos.d
+
+vi /etc/yum.repos.d/grafana.repo
+
+Add below in file and save
+
+[grafana]
+name=grafana
+baseurl=https://packages.grafana.com/oss/rpm
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+
+
+
+yum install grafana
+
+
+service grafana-server start
+
+
+refer https://grafana.com/docs/installation/rpm/
+
+
+
+open port 3000
+
+
+Install telegraf
+-----------------
+
+wget https://dl.influxdata.com/telegraf/releases/telegraf-1.12.6-1.x86_64.rpm
+
+sudo yum localinstall telegraf-1.12.6-1.x86_64.rpm
+
+refer:  https://portal.influxdata.com/downloads/           click telegraf
+
+service telegraf start
+
+
+open port
+
+
+
+Install influxdb
+----------------
+
+wget https://dl.influxdata.com/influxdb/releases/influxdb-1.7.9.x86_64.rpm
+
+sudo yum localinstall influxdb-1.7.9.x86_64.rpm
+
+refer:  https://portal.influxdata.com/downloads/           click influxdb
+
+service influxdb start
+
+
+
+open port 8086
+
+
+
+
+
+
+influx
+
+CREATE USER "admin" WITH PASSWORD 'admin' WITH ALL PRIVILEGES;
+
+show users;
+
+exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Zabbix
+------
+
+
+
+configure zabbix plugin in grafana
+-----------------------------------
+go to grafana.com plugin
+
+
+in grafana machine
+
+grafana-cli plugins install alexanderzobnin-zabbix-app
+
+restart grafana
+
+
+
+go to plugin in grafana portal
+
+go to zabbix
+
+enable it
+
+now you will get zabbix main menu
+
+
+Go to data source
+
+new 
+give name
+type zabbix
+
+in http
+url: http://192.168.40.65/zabbix/api_jsonrpc.php
+
+zabbix api detail
+username: Admin
+password:             //Give password here
+
+
+
+zabbix -> dashboard
+
+
+
+
+
+
+
+
+zabbix installation
+-------------------
+
+www.zabbix.com/download
+
+Install zabbix from package
+
+
+rpm -i url_of_rpm
+
+yum install zabbix-server-mysql zabbix-agent zabbix-get zabbix-web-mysql mariadb-server
+
+
+systemctl start mariadb
+
+mysql
+
+create database zabbix character set utf8 collate utf8_bin;
+
+grant all privileges on zabbix.* to zabbix@localhost identified by 'zabbix';
+
+ctrl + c  or quit
+
+cd /usr/share/doc/zabbix-server-mysql-3.4.13/
+
+ls
+
+zcat create.sql.gz | mysql zabbix
+
+
+mysql
+
+show databases;
+
+use zabbix
+
+show tables;
+
+ctrl + c
+
+
+
+cd -
+
+
+vim /etc/zabbix/zabbix_server.conf
+
+search for DBName
+DBName=zabbix
+
+search for DBUser
+DBUser=zabbix
+
+Search for DBPassword
+DBPassword=zabbix               //if not there add it
+
+save and exit
+
+
+
+
+getenforce
+
+setenforce 0
+
+getenforce       //it should display Permissive
+
+service firewalld stop
+
+systemctl start zabbix-server
+
+
+less /var/log/zabbix/zabbix_server.log
+
+ps ax | grep zabbix
+
+
+
+vim /etc/httpd/conf.d/zabbix.conf
+
+uncomment php_value data.timezone Europe/Riga    //uncommment this. Give proper timezone
+
+save and exit
+
+systemctl start httpd
+
+
+in browser
+
+http://192.168.40.65/zabbix
+
+click next step
+
+click next step
+
+Configure DB configuration
+
+Database type: MYSQL
+Database host: localhost
+Database port: 0
+Database name: zabbix
+User: zabbix
+Password: zabbix
+
+
+click next
+
+zabbix server detail
+host: localhost
+port: 10051
+name: testing zabbix installation
+
+click next
+
+check everything in pre installation summary
+
+click next
+
+Click finish
+
+
+
+then username: Admin
+Password: zabbix
+
+click sign in
+
+
+Click configuration
+
+click host
+
+that host may be disabled
+
+
+in server terminal
+
+systemctl start zabbix-agent
+
+
+
+now enable in UI
+Click on state
+Now it will be enabled
+
+Wait for 2 mins
+
+Check availability will move to green
+
+
+
+
+ 
+click on monitorring
+click latest data
+
+
+
+Click configuration
+host         //to add host
+
+
+Click on monitorring
+Click latest data
+Click on any thing to check graph
+
+
+
+In host give zabbix server
+Click apply
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
