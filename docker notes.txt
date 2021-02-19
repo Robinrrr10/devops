@@ -1168,7 +1168,9 @@ sudo su -c "java -jar myseleniumtest.jar" -s /bin/sh ubuntu                     
 
 
 
-
+Helpfull commands:
+-----------------
+COPY dir dir /usr/local/tomcat/             - copying multiple files using dockerfile commands
 
 
 
