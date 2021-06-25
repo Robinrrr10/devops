@@ -1,0 +1,57 @@
+kubectl version --short
+
+helm version --short
+
+
+helm repo list
+
+helm search repo metrics-server
+
+helm inspect values stable/metrics-server > /tmp/metrics-server.values
+
+or
+
+helm show values stable/metrics-server > /tmp/metrics-server.values
+
+
+vi /tmp/metrics-server.values
+
+enable hostNetwork
+
+uncomment - --kubelet-insecure-tls
+
+save and exit
+
+
+
+helm install --name metrics-server stable/metrics-server --namespace operations --values /tmp/metrics-server.values
+
+or
+
+helm install metrics-server stable/metrics-server --namespace operations --values /tmp/metrics-server.values
+
+
+kubectl create ns operations
+
+helm install metrics-server stable/metrics-server --namespace operations --values /tmp/metrics-server.values
+
+helm list
+
+or
+
+helm list --all-namespaces
+
+
+kubectl -n operations get all
+
+kubectl -n operations logs -f givemetricsserverpodname
+
+kubectl top nodes
+
+kubectl -n kube-system top pods
+
+
+
+
+
+

@@ -1,0 +1,24 @@
+Correct file to add environment variable in cent os
+---------------------------------------------------
+
+create new file under  /etc/profile.d/
+Eg: env.sh        //File can be any name
+
+
+Add your environment variable as like below
+#adding environment variable
+export JAVA_HOME=/home/java/jdk-14.0.2
+export CLASSPATH=.:/home/java/jdk-14.0.2/lib
+export MAVEN_HOME=/home/maven/apache-maven-3.6.3
+export CATALINA_HOME=/home/tomcat/apache-tomcat-9.0.37
+export PATH=$PATH:$JAVA_HOME/bin:$MAVEN_HOME/bin:$CATALINA_HOME/bin
+
+
+Set that file as the source file using below command
+source /etc/profile.d/env.sh
+
+
+// When running remote shell script in jenkins we got issue related to  environment variable. At that time the environment variable is defined under ~/.bash_profile.
+// Now we added new file under /etc/profile.d/ and made that file to souce. Now remote shell script is working
+
+--------------------------

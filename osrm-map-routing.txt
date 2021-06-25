@@ -1,0 +1,15 @@
+Map routing techinque:
+----------------------
+
+
+https://github.com/Project-OSRM/osrm-backend
+
+https://medium.com/logistimo-engineering-blog/osrm-data-generation-and-deployment-2f5a66269342
+
+
+https://www.openstreetmap.org/
+
+
+http://download.geofabrik.de/
+
+https://www.interline.io/osm/extracts/
