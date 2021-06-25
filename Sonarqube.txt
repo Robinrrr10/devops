@@ -1,0 +1,116 @@
+SonarQube notes
+--------------
+
+
+go to bin
+run StartSonar.bat file
+
+This will start sonarqube in few mins
+Sometime it will take some more time
+
+This will run on localhost:9000
+
+-----
+
+Default credential is:
+user name: admin
+Password: admin
+
+----
+
+Add below dependency in pom.xml
+
+<dependency>
+   	<groupId>org.sonarsource.scanner.maven</groupId>
+    	<artifactId>sonar-maven-plugin</artifactId>
+    	<version>3.7.0.1746</version>
+</dependency>
+
+
+----
+
+
+To run:
+
+mvn install sonar:sonar
+
+or
+
+mvn clean
+mvn install
+mvn sonar:sonar
+
+----
+
+Java is required to run SonarQube
+
+-----
+
+
+If sonarqube is running on some other remote server, we need to specify the hostname. This should be added in pom.xml. 
+Below is the example.
+
+<profiles>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.host.url>http://192.168.222.61:9000</sonar.host.url>
+			</properties>
+		</profile>
+</profiles>
+
+
+----
+
+If you want to add code coverage of the unit test. below needs to be added in pom.xml
+
+<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.5</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>target/jacoco.exec</dataFile>
+							<outputDirectory>target/jacoco-ut</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<systemPropertyVariables>
+						<jacoco-agent.destFile>target/jacoco.exec</jacoco-agent.destFile>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+		</plugins>
+</build>
+
+
+
+
+
+----------
+
