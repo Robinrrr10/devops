@@ -1,0 +1,52 @@
+MongoDB:
+--------
+--------
+It is a Database which stores data in json format
+It is NoSql database
+
+
+
+MongoDb installation in windows:
+--------------------------------
+
+Go to https://www.mongodb.com/
+Go to product -> community server (under Community Edition)
+Download form this page (Check version, os, package here)
+It will download .msi file Eg:(mongodb-windows-x86_64-5.0.6-signed.msi)
+Double click this file and give next/next and install by all default option selected here
+
+It will be installed in belo path
+C:\Program Files\MongoDB\Server\5.0      //Based on versin we install, it will differ only the version
+Inside below bin we can find all executable files of mongdb
+C:\Program Files\MongoDB\Server\5.0\bin
+Add above path as environment variable //Add this as one of the path for "Path"
+Go inside c drive and create "data" folder and then go inside "data". create "db folder" // This folder ( C:\data\db ) should exists for starting the mongodb
+
+
+
+Query or Commands:
+-----------------
+
+To start running the mongodb:
+Open command prompt and give below
+mongod                                 //This will start the mongodb
+It will start the mongodb
+
+To login:
+Open command prompt and give below
+mongo
+
+To view all databases
+show dbs 
+
+To create new db use below command //Until to add collection and data in new db, it wont show the created db even we use above command after creation
+use newdbname        //Eg: use mydb     //It will create and switch to that db
+
+To insert new record in collection //This can be used to add collection and record if collection not exists
+db.collectionname.insert(givejson here)
+Eg:
+db.book.insert({"name":"Raju", "age": 27}) //This will create new record //If collection not exists it will automatically create collection and then add record 
+
+To view records in collection
+db.collectionname.find()     
+db.book.find()       //This will show all records in book collection
