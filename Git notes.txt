@@ -186,6 +186,9 @@ git checkout first8digitofcommitid filename   //This will revert the file to par
 
 
 
+To revert the added file (To revert git add)::
+-----
+git reset       //This will revert which is already added using git add .  //After reverting still changes will be there without adding
 
 
 
