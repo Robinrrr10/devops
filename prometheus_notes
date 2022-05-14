@@ -100,9 +100,9 @@ firewall-cmd --add-port=9090/tcp --permanent
 firewall-cmd --reload
 
 Step 14: Now open browser and give below ip address of prometheus installed server along with port like below
-http://ipaddress:9090
+http://ipaddress:9090/graph
 Eg: 
-http://192.168.18.131:9090
+http://192.168.18.131:9090/graph
 
 Step 15:
 It should show prometheus page in browser. Thats it
