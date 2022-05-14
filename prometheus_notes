@@ -1,0 +1,112 @@
+Prometheus
+---------
+---------
+
+
+Prometheus is the open source free tool which will collect metrics from any server or any vm or k8 or docker etc
+It will collect almost all metrics. Eg: CPU usage, memory usage, disk usage, network, and many more etc
+
+It will work on pull based meaning. Meaning. Prometheus will call an api of server to get the metrics.
+We have different agent for prometheus which will expose an api in the server. That agent will be installed in server where we wanted to collect the metrics.
+That agent will create the api. Prometheus server will call the api to collect the metrics.
+
+
+Set of premetheus server or prometheus installation: (in cent os )
+---------------------------------------------------
+
+Step 1: Update yum using below command
+sudo yum update -y
+
+Step 2: Download premetheus from official page ( https://prometheus.io/download/ ). I copied the link and used below command to download
+wget https://github.com/prometheus/prometheus/releases/download/v2.35.0/prometheus-2.35.0.linux-amd64.tar.gz
+
+Step 3: Extract the tar using below command
+tar -xzvf prometheus-2.35.0.linux-amd64.tar.gz
+
+Step 4: Rename the extracted folder to prometheus-files using below command
+mv prometheus-2.35.0.linux-amd64 prometheus-files
+ 
+Step 5: Create the prometheus user using below command
+sudo useradd --no-create-home --shell /bin/false prometheus
+
+Step 6: Create directories of /etc/prometheus and /var/lib/prometheus and given permission
+sudo mkdir /etc/prometheus
+sudo mkdir /var/lib/prometheus
+sudo chown prometheus:prometheus /etc/prometheus
+sudo chown prometheus:prometheus /var/lib/prometheus
+
+Step 7: Copy prometheus-files/prometheus and prometheus-files/promtool to /use/local/bin/ and give permission
+sudo cp prometheus-files/prometheus /usr/local/bin/
+sudo cp prometheus-files/promtool /usr/local/bin/
+sudo chown prometheus:prometheus /usr/local/bin/prometheus
+sudo chown prometheus:prometheus /usr/local/bin/promtool
+ 
+Step 8: Copy prometheus-files/consoles and prometheus-files/console_libraries to /etc/prometheu and give permission
+sudo cp -r prometheus-files/consoles /etc/prometheus
+sudo cp -r prometheus-files/console_libraries /etc/prometheus
+sudo chown -R prometheus:prometheus /etc/prometheus/consoles
+sudo chown -R prometheus:prometheus /etc/prometheus/console_libraries
+
+Step 9: create /etc/prometheus/prometheus.yml file using below command and give content and permission
+sudo vi /etc/prometheus/prometheus.yml
+
+Copy below content in file /etc/prometheus/prometheus.yml and save it
+
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+
+
+Give below command to give permission
+sudo chown prometheus:prometheus /etc/prometheus/prometheus.yml
+
+Step 10: Create service using below command and give the content and save it
+sudo vi /etc/systemd/system/prometheus.service
+
+Copy below content and paste and save it
+[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+    --config.file /etc/prometheus/prometheus.yml \
+    --storage.tsdb.path /var/lib/prometheus/ \
+    --web.console.templates=/etc/prometheus/consoles \
+    --web.console.libraries=/etc/prometheus/console_libraries
+
+[Install]
+WantedBy=multi-user.target
+
+
+Step 11: Give below command to reload daemon and start prometheus
+sudo systemctl daemon-reload
+sudo systemctl start prometheus
+
+Step 12: Give below command to check status of prometheus. It should show active.
+sudo systemctl status prometheus
+
+Step 13: Open port 9090 and reload firewall using below  command
+firewall-cmd --add-port=9090/tcp --permanent
+firewall-cmd --reload
+
+Step 14: Now open browser and give below ip address of prometheus installed server along with port like below
+http://ipaddress:9090
+Eg: 
+http://192.168.18.131:9090
+
+Step 15:
+It should show prometheus page in browser. Thats it
+
+
+
+
