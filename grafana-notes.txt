@@ -45,6 +45,23 @@ password : admin
 
 
 
+To integrate prometheus with grafana
+------------------------------------
+Open grafana dashboard
+
+Step 1: Go to configuraion -> data source
+
+Step 2: Then select Prometheus
+
+Step 3: Then give url of our prometheus server along with port 
+Eg:
+http://192.168.18.131:9090
+//Make sure above port is openned in prometheous server and also check whether grafana server can able to ping premetheus server or not
+
+Step 4: 
+Click on save and test
+It should give working. Thats it
+
 
 Installation
 ------------
