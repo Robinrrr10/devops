@@ -1,6 +1,51 @@
 Grafana
 -------
 
+Recent Installation steps (updated on 15-May-2022)
+--------------------------------------------------
+
+Step 1: Add grafana.repo file inside /etc/yum.repos.d
+
+sudo vi /etc/yum.repos.d/grafana.repo
+
+Below is the content of grafana.repo
+[grafana]
+name=grafana
+baseurl=https://packages.grafana.com/enterprise/rpm
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+
+Step 2: Install grafana using below  command
+sudo yum install grafana
+
+Step 3: reload daemon and start grafana-server and check the status using below commands
+sudo systemctl daemon-reload
+sudo systemctl start grafana-server
+sudo systemctl status grafana-server
+
+Step 4: If we wanted to auto start while booting enable using below command
+sudo systemctl enable grafana-server
+
+Step 5: Open port 3000 and relaod firewall in below commands
+firewall-cmd --add-port=3000/tcp --permanent
+firewall-cmd --reload
+
+Step 6: Open browser and give below link
+http://ipaddress:3000
+Eg:
+http://192.168.18.129:3000
+
+Step 7: Use default credential to login
+username : admin
+password : admin
+
+
+
+
 Installation
 ------------
 
