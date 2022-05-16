@@ -1,0 +1,3 @@
+
+
+sysctl -n hw.ncpu       //This is to check number of threads or local core
