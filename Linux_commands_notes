@@ -1,3 +1,15 @@
 
 
 sysctl -n hw.ncpu       //This is to check number of threads or local core
+
+cat /etc/redhat-release    //This is to check the os name and its version
+
+free -m                  //This is give memory(Ram) usage
+
+w                   //This will give uptime, load average and number of users currently logged in.
+
+uptime              //This is give uptime. It will give total duration of this server is running.
+
+cat /proc/cpuinfo          //This is give CPU information. Including number of cores
+
+cat /proc/loadavg         //This will give load average.
