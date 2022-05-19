@@ -258,6 +258,7 @@ OR if you want to set up it to IST (Asia/Calcutta):
 236,while [ 0 ]; do cat /home/tigo_tanzania_hlr_response/getEnabledResponse.xml | nc -l 192.168.231.102 2443; done,while [ 0 ]; do cat responsefilewithpath | nc -l hostip port; done,while [ 0 ]; do cat /home/tigo_tanzania_hlr_response/getEnabledResponse.xml | nc -l 192.168.231.102 2443; done,Used to give this response when request comes to this port,,,
 237,nc -l 192.168.231.26 2443,nc -l ip port,nc -l 192.168.231.26 2443,Used to check response time out.,,,
 238,"sudo date --set=""$(ssh giveusername@ipaddress date)""","sudo date --set=""$(ssh centos@192.168.0.20 date)""",,Used to set date and time of other server. So the date and time will be in sync,,,
+239,"nohup command &>pathtogetoutputlogs.out &","nohup /home/myfile/script.sh &> /home/scriptlog.out &","nohup /home/myfile/script.sh &> /home/scriptlog.out &",Used to run the command in background and capture the output in a file,Also it wont print anything when running,,
 ,,,,,,,
 ,"""command not found"" then install it",packagename install commandname,,,,,
 ,,,,,,,
