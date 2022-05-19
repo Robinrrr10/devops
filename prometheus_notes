@@ -164,7 +164,7 @@ Thats it
 
 Note:
 Prometheus server time and its all client machine time should have same time
-
+http://localhost:9100/metrics will give metrics detail in api response. It will contain type of metrics and help which describe the metrics
 
 
 Prometheus functioning:
@@ -225,6 +225,9 @@ Status -> Rules :
 
 Status -> Targets:
 Here we show all targeted client servers here along with status
+
+Status -> Service discovery
+It will give few informal like prometheus running address and port, metrics endpoint, etc
 
 
 
