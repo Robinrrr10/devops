@@ -63,6 +63,32 @@ Click on save and test
 It should give working. Thats it
 
 
+To add all complete dashboard in grafana for prometheus node exporter:
+------------------------------------------------------------------
+Go to https://grafana.com/grafana/dashboards/
+Select data source as prometheus and select collector type as node exporter
+Select Node exporter full           //There could be multiple dashboard. We can pick what we need
+It will open the page. Eg: https://grafana.com/grafana/dashboards/1860   //There might be multiple id. We can pick what we need
+There we can copy the id. Id will be available in url also   Eg: 1860
+
+To add:
+Go to grafana
+Click + icon
+Selctor import
+In import via grafana.com give the copied id and click on load
+Then select prometheus as data source
+Then select import.
+Now you can able to see tme metrics.
+Save that dashboard. thats it
+
+Now we can enjoy the metrics.
+We can pick any dashboard from https://grafana.com/grafana/dashboards
+
+
+
+
+
+
 Installation
 ------------
 
@@ -285,7 +311,10 @@ import
 
 
 
+----------------
 
+
+For 
 
 
 
@@ -666,7 +695,23 @@ Click apply
 
 
 
+How to add the dashboard quickly
+---------------------------------
+To add the template of different dashboards in grafana:
+------------------------------------------------------
+Go to https://grafana.com/grafana/dashboards
+Use filter option to filter the dashboard template we need.
+Then select any dashboard and copy the id
+Now go to our grafana page.
+Click on + icon
+Then click on import
+Give the copied in "Import via grafana.com" field
+Click on load
+Select data source and click on import
+Now we should be able to see the dashboard.
+Save the dashboard. Thats it
 
+-----------------------------------------------------------------
 
 
 
