@@ -7,7 +7,7 @@ Prometheus is the open source free tool which will collect metrics from any serv
 It will collect almost all metrics. Eg: CPU usage, memory usage, disk usage, network, and many more etc
 
 It will work on pull based meaning. Meaning. Prometheus will call an api of server to get the metrics.
-We have different agent for prometheus which will expose an api in the server. That agent will be installed in server where we wanted to collect the metrics.
+We have different agent(Eg: node exporter, app exporter, sql exporter etc...and more) for prometheus which will expose an api in the server. That agent will be installed in server where we wanted to collect the metrics.
 That agent will create the api. Prometheus server will call the api to collect the metrics.
 
 
@@ -135,6 +135,7 @@ Eg
 http://localhost:9100/metrics
 
 
+
 Set up prometheus server to collect metrics from other client services (In prometheus server)
 ----------------------------------------------------------------------
 Step 1: open /etc/prometheus/prometheus.yml file
@@ -163,3 +164,78 @@ Thats it
 
 Note:
 Prometheus server time and its all client machine time should have same time
+
+
+
+Prometheus functioning:
+----------
+Prometheus will call the api of its exporter and store the metrics
+Prometheus will store retrived data into its time series database
+Prometheus will create http service which will accept the query and give result
+
+Prometheus metrics type:
+----------------------
+4 types
+counters:
+Record the value which will increase everytime
+
+Gauges:
+Record the value which can increase or decrease
+
+Histograms:
+It will be used later point for calculation like average, percentage etc in give range or custom range
+
+Summary
+It will be used later point for calculation like average, percentage etc
+
+
+
+Prometheus UI:
+---------------
+URL:
+http://localhost:9090
+
+Prometheus UI will be running on above port
+
+In main graph page, it will takes the query
+It has option to check query history, local time and auto complete
+We can add our query in expression and execute 
+And then we can see in table or graph format
+
+If need we can add multiple pannel and then we can execute multiple query expression
+
+Alert option in UI:
+Alert will show inactive, pending and firing alerts
+
+Status -> Runtime and Build information:
+This will give information about the prometheus, its start time, directory and its version and more
+
+Status -> TSTB status:
+This will show databases data.
+We can check databases status here
+We can also take query from here and paste in expression and execute and see the table or graph
+
+Status -> Command line flag:
+Here we can see few command which we can use to change the config
+
+Status -> configuration:
+This will show prometheus configuration file (prometheus.yaml)
+
+Status -> Rules :
+
+Status -> Targets:
+Here we show all targeted client servers here along with status
+
+
+
+
+
+
+
+
+
+
+
+
+
+
