@@ -111,6 +111,8 @@ It should show prometheus page in browser. Thats it
 
 Setup of client server (server which we need to monitor) or prometheous node exporter : (in cent os ) 
 ---------------------------------------------------
+Node exporter will give collect metrics of server, VM or any machine.
+It will collect almost all metrics like CPU usage, memory usage, network, disk and many more
 
 Step 1: Download node exporter from https://prometheus.io/download/#node_exporter using below command  //Node exporter is to monitor server machine
 wget https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz
@@ -165,6 +167,64 @@ Thats it
 Note:
 Prometheus server time and its all client machine time should have same time
 http://localhost:9100/metrics will give metrics detail in api response. It will contain type of metrics and help which describe the metrics
+
+
+
+MySQL Exporter: Setup of mysql server 
+-------------------------------------
+This is used to collect metrics related to mysql database.
+
+Below step needs to be done in machine where mysql database is running.
+
+Step 1:
+Go to below link
+https://prometheus.io/download/
+
+Step 2:
+Copy the link address to download the mysqld_exporter tar file and download in mysql machine
+Eg:
+wget https://github.com/prometheus/mysqld_exporter/releases/download/v0.14.0/mysqld_exporter-0.14.0.linux-amd64.tar.gz
+
+Step 3:
+Extract the tar file
+Eg:
+tar -xzvf mysqld_exporter-0.14.0.linux-amd64.tar.gz
+
+Step 4:
+Create a file in below path. We should only use below path. Then only it will work
+ vi /root/.my.cnf
+ 
+Add below content with mysql user and password and save it
+[client]
+user=root
+password=Admin@123
+
+
+Step 5: 
+Open port 9104 and restart the firewall
+Eg:
+firewall-cmd --add-port=9104/tcp --permanent
+firewall-cmd --reload
+
+Step 6:
+Go to extrator mysql exported and run the mysql exported
+Eg:
+./mysqld_exporter
+
+Step 7:
+Now call below link and check whether it is working not not. It should show metrics in response
+http://192.168.18.129:9104/metrics
+
+Step 8:
+If need we can run this on background when starting the server.
+Eg:
+nohup /home/mysql/mysqld_exporter-0.14.0.linux-amd64/mysqld_exporter &> /home/mysql/mysqld_exporter-0.14.0.linux-amd64/nohup.out &
+We can add above line in ~/.bash_profile to start automatically in background
+
+
+
+
+
 
 
 Prometheus functioning:
