@@ -58,6 +58,9 @@ Eg:
 http://192.168.18.131:9090
 //Make sure above port is openned in prometheous server and also check whether grafana server can able to ping premetheus server or not
 
+Optional Step:
+By default, scrape interval will be 15 sec. So whatever might be data in prometheus, it will show each dot in grafana for every 15 sec if it is not changed. So change value in scrape interval as 1 sec or some other value. So that each dot will be for every 1 sec
+
 Step 4: 
 Click on save and test
 It should give working. Thats it
@@ -713,7 +716,10 @@ Save the dashboard. Thats it
 
 -----------------------------------------------------------------
 
-
+Note:
+-----
+-----
+When adding any data source in grafana, change scape interval value to 1 sec. Then only it will show each dot in graph for every 1 sec. Else it will be in every 15 sec which is default value
 
 
 
