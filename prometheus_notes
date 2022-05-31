@@ -137,6 +137,41 @@ Eg
 http://localhost:9100/metrics
 
 
+Optional: We can create node exporter as the service and enable to auto start when machine is up
+-------------------------------------------------------------------------------------------------
+Step 1: go to the directory where node exporter is available using below command
+cd /home/node/node_exporter-1.3.1.linux-amd64/
+
+Step 2: copy or move node_exporter file to /usr/local/bin
+cp node_exporter /usr/local/bin                           or    mv node_exporter /usr/local/bin
+
+Step 3: Create a user node_exporter
+sudo useradd -rs /bin/false node_exporter
+
+Step 4: Create  nodeexporter.service in /etc/systemd/system/
+vi /etc/systemd/system/nodeexporter.service
+
+Step 5: Give below content and save it
+[Unit]
+Description=Node exporter to give metrics to prometheus
+After=network.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+
+Step 6: Reload daemon
+systemctl daemon-reload
+
+Step 7: Start the service and check the status
+systemctl start nodeexporter
+systemctl status nodeexporter
+
+
 
 Set up prometheus server to collect metrics from other client services (In prometheus server)
 ----------------------------------------------------------------------
