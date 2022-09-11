@@ -1,0 +1,14 @@
+Different tools and usage
+-------------------------
+
+Ngrok
+-----
+This is used to make the locally running localhost application to public.
+Below is the command. Give the locally running port number instead of 80
+ngrok http 80
+This will give the public ip address. This hostname will be expired once your terminate the command or stop running
+
+
+Web to store json/data/text to use for mobile application
+--------------------------------------------------------
+https://www.npoint.io/     //Here we can save the json and edit the json in future
