@@ -194,7 +194,24 @@ git reset       //This will revert which is already added using git add .  //Aft
 
 
 
+To force push:
+--------------
+git push origin branchname -f
+Eg:
+git push origin master -f
 
+
+To view the remote url
+----------
+git remote -v 
+This will view the git url used
+
+
+To set new remote url:
+-----------
+git remote set-url origin urlofthegit
+Eg:
+git remote set-url origin https://github.com/robin/myapp.git
 
 
 
