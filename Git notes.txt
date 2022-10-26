@@ -111,6 +111,7 @@ git stash show   //This wil show all stash
 git stash apply   //This will again give new changes
 
 
+git stash pop    //This is undo git stash. This will revert the changes before git stash
 
 
 git log      //This will show all commit log. This is like history
