@@ -1,0 +1,29 @@
+npm commands:
+-----------
+
+
+npm init    - this is create new node/npm project
+
+npm init -y   - to create new npm/node project with default values
+
+npm install packagename  - this to install the package in current project
+
+npm install packagename --save    - this to install the package in current project and save as dependencies in packages
+
+npm install packagename --save-dev  - this to install the package in current project and save as dev dependencies in package.json. dev dependencies will be installed only in dev machine. it wont be installed in production
+
+npm install -g packagename       - to install the package/tool globally
+or
+Eg:
+npm install -g appium
+npm install -g yarn
+
+npm list -g    - this is to show all globally installed npm packages/tools
+
+npm list -g
+
+npm install    - it will install the dependencies of current project
+
+npm run commandname        - to run the project. the command will be given inside scripts in package.json. that command will be called internally
+Eg:
+npm run start
