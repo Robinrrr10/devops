@@ -215,8 +215,11 @@ Eg:
 git remote set-url origin https://github.com/robin/myapp.git
 
 
-
-
+To use the git command outside the project folder
+------------------------
+git -C pathOfTheProjectFolder command
+Eg:
+git -C /root/rob/MyProj status
 
 
 
