@@ -1177,6 +1177,10 @@ COPY dir dir /usr/local/tomcat/             - copying multiple files using docke
 
 
 
+Useful other Docker commands:
+----------------
+docker system prune          //Used to delete all unused container, volume, network and images in docker
+docker system prune -a        //Used to delete all container, volume, network and images in docker
 
 
 
