@@ -1,0 +1,16 @@
+
+After running any operating system if we face any issue related to display resolution or any thing related to that VM system use below steps to resolve it
+
+Run the VM
+Devices -> Insert guest additions CM image  //CD image of of gues additions will be get the file system
+Open my computer or the file system
+We can see VirtualBox guest additions where we usually see the CD image
+Open VirtualBox guest addition folder
+Double click VBoxWindowsAdditions and install    //If it is linux or other operating system follow the same step with command or other tool to install
+Once installed, restart the machine
+Now check whether the resolution or the VM system issue has been resolved or not
+
+
+Note:
+  Usually this needs to install once installation is done on the virtual box. So that it works without any issue
+  
