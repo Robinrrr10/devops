@@ -1,0 +1,10 @@
+https://www.turnkeylinux.org/
+
+From this site we can easily download ready to use multiple application, tools, deployed servers and many more etc.
+It will give in iso where we can run in virtual box or vmware.
+IT will also give the github link
+And also the steps to install.
+
+We can take whatever is easy for use and use at once.
+
+Useful site to download and try a application
