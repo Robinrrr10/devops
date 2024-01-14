@@ -8,3 +8,7 @@ And also the steps to install.
 We can take whatever is easy for use and use at once.
 
 Useful site to download and try a application
+
+
+They have lot of VM ready application.
+We can try those
