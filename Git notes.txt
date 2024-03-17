@@ -222,6 +222,12 @@ Eg:
 git -C /root/rob/MyProj status
 
 
+To rename/move the branch
+--------------------------
+git branch -M newBranchName
+Eg:
+git branch -M main 
+
 
 Github
 ------
