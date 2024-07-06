@@ -1183,6 +1183,11 @@ docker system prune          //Used to delete all unused container, volume, netw
 docker system prune -a        //Used to delete all container, volume, network and images in docker
 
 
+To uninstall/deactivate docker swarm
+---------------------
+ docker swarm leave //Run this in worker node. So that worker will leave from swarm
+
+ docker swarm leave --force  //Run this in manager node. So that manager will also leave from swarm
 
 
 Docker helpful sites
