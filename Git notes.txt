@@ -229,6 +229,13 @@ Eg:
 git branch -M main 
 
 
+To do empty command without any file change, use below command
+-------------------------------------------------------
+git commit --allow-empty -m "Your commit message"
+Eg:
+git commit --allow-empty -m "my dummy commit to test it"
+//Even we can raise the PR with this empty commit without any file changes
+
 Github
 ------
 While creating new repository if you tick "Initialize this repository with a README", then it will create repo which contains readme file
