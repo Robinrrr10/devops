@@ -1,0 +1,71 @@
+Github Actions notes
+---------------------
+Tutorial used:
+https://www.youtube.com/watch?v=kgsZJMp3bgs
+
+Repo link:
+https://github.com/Robinrrr10/githubActions
+
+Github action is the component given in the github for CICD automation process.
+Here we can run the CICD
+Here we can build the project, run the project.
+We we can run the CICD via cron or trigger when there is any deployment etc
+Below you can find more details about the github actions.
+
+
+
+
+
+To add github action, we need to create a yaml file under .github/workflows
+
+Below is the simple github action yaml file
+
+name: Simple Action
+on: push
+
+jobs:
+  printHello:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print Hello World....
+        run: echo 'Hello World!!!'
+
+
+
+
+name       - this is to give the githuh action name
+on         - Here we will give when it should trigger. push meaning, when some changes are pushed, it will trigger
+
+jobs       - This is to give the jobs. In a yaml file we can give n number of jobs
+
+We can give n number of steps in each jobs
+
+steps   - This is to give the steps. We will be giving the name of the step under that
+run     - This is to run the commend.
+
+uses    - This is to specific which one we need to use in github action market place.   actions/checkout@v6 - this is to check repo. actions/setup-python@v6.2.0 this is to do python setup.
+From below link we can get the required plugins in github market place
+https://github.com/marketplace?type=actions
+
+For cloning use below under steps
+      - name: Clone Repo
+        uses: actions/checkout@v6
+
+
+Below is to do python setup    
+      - name: Doing Python Setup
+        uses: actions/setup-python@v6.2.0
+        with: 
+          python-version: '3.10'
+
+Below is the way to schedule the job on cron timing
+name: Run Crob Job
+on:
+  schedule:
+    - cron: '* * * * *'
+
+
+
+
+
