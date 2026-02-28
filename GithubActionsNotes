@@ -65,7 +65,37 @@ on:
   schedule:
     - cron: '* * * * *'
 
+Below is the way to trigger the github action when code pus happens on specific branch 
+name: Using branch secrets and run
+on:
+  push:
+    branches: [ mybranch ]
 
+//Here inside branches we can give the branch name
+
+Github secrets
+Secrets the value of variable which wont be shown in the logs or repos.
+We can use secure variables like user name, password in secrets
+We can use any secrets in the github.
+
+
+To add secrets for github actions of the repo
+We go to the required repository
+Click settings in that repository
+Click Secrets and variables
+Select Actions
+Under Repository secrets click Add new repository secrets
+Now we can give secret name and the value
+We can use this secret name in the actions yaml file by calling  ${{ secrets.GiveTheNameHere }} Eg: ${{ secrets.USER_NAME }}
+
+
+Below is the way to read the secrets and add int in the environment of github action 
+      - name: Adding and using secrets
+        env:
+          NAME: ${{ secrets.USER_NAME }}
+          ROLE: ${{ secrets.USER_ROLE }}
+
+We need to use like about to read the secrets
 
 
 
